@@ -1,0 +1,145 @@
+/* General styling */
+body {
+    background-color: #eef0f3; 
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin-top: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+label {
+    font-size: 20px;
+    margin-right: 10px;    
+}
+
+p{
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+/* Controls styling */
+#controls {
+    margin-bottom: 20px;
+}
+
+#setup-container {   
+    margin-top: 20px;
+    margin-left: 640px;
+    width: 500px;
+    background-color: #9ed6ec;
+    padding: 20px;
+    display:block;    
+    justify-content: center;    
+}
+
+#board-size {
+    font-size: 20px;
+}
+
+#main-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    margin-top: 20px;
+}
+
+#game-container {
+    position: relative;
+    width: 1400px;  
+}
+
+#status {
+    height: 300px;
+    width: 400px;
+    background: #9ed6ec;    
+    flex-direction: column; 
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px; 
+    font-size: 20px;
+    display: none;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#status-text{
+    margin-left: 10px;
+    margin-right: 50px;   
+}
+
+#status-hex{    
+    margin-top: 20px;   
+}
+
+#surrender {
+    margin-top: 50px;
+    margin-left: 40px;  
+    align-self: center; 
+}
+
+#new-game {    
+    margin-left: 150px;  
+    align-self: center; 
+}
+
+/* Hexagon styling */
+.hex {
+    width: 60px;
+    height: 60px; 
+    background: black;
+    display: inline-block;      
+    position: relative;
+    margin: 0;  
+}   
+
+.hex:before {
+  top: 2px;  
+  left: 2px; 
+  height: calc(100% - 4px);  
+  width: calc(100% - 4px);
+  background: #ddd;
+  position: absolute;
+  content: '';
+}
+
+.hex, .hex:before { 
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Colors for players */
+.hex.White::before {
+    background: white;
+}
+
+.hex.Black::before {
+    background: black;
+}
+
+.hex.White, .hex.Black {
+    animation: place 0.3s ease-in-out;
+}
+
+@keyframes place {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
