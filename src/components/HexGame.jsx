@@ -49,6 +49,7 @@ const HexGame = () => {
         // Show the status once the game starts
         const status = document.getElementById("status");
         status.style.display = "block";
+        status.style.color = "black";
         setStatus("Black's turn");
         setCurrentPlayer("Black");        
     };
@@ -137,7 +138,8 @@ const HexGame = () => {
     return (
         <div>
             <div id="lobby-container">
-                <div id="setup-container">
+                <div id="setup-wrapper">
+                <div id="setup-container">                                     
                     <h1>Hex</h1>
                     <h2>Instructions:</h2>
                     <p>
@@ -150,6 +152,7 @@ const HexGame = () => {
                     <input type="number" id="board-size" min="3" max="19" defaultValue="11" />
                     <button id="start-game">Start Game</button>
                 </div>
+                </div>                
             </div>
             <div id="main-container">
                 <div id="game-container"></div>
