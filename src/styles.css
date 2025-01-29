@@ -112,7 +112,8 @@ p{
 
 #status-text{
     margin-left: 10px;
-    margin-right: 50px;   
+    margin-right: 50px;
+    font-weight: bold;   
 }
 
 /* Hexagon styling */

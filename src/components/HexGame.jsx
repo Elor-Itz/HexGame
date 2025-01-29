@@ -117,6 +117,7 @@ const HexGame = () => {
             const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
             game.currentPlayer = nextPlayer;
             setCurrentPlayer(nextPlayer);
+            document.getElementById("status").style.color = nextPlayer === "Black" ? "black" : "white";            
             setStatus(`${nextPlayer}'s turn`);
         }
     };
@@ -143,7 +144,7 @@ const HexGame = () => {
                     <h1>Hex</h1>
                     <h2>Instructions:</h2>
                     <p>
-                        Hex is a game played on a two-dimensional board by two players - black and white.
+                        Hex is a game played on a two-dimensional board by two players - <span style={{ color: 'black', fontWeight: 'bold' }}>Black</span> and <span style={{ color: 'white', fontWeight: 'bold' }}>White</span>.
                         Your goal is to form a connected path of your color, linking two opposite sides of the board:
                         black connects top and bottom, while white connects left and right.
                         The player who completes such a connection wins the game!
