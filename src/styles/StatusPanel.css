@@ -12,6 +12,11 @@
     display: none;
 }
 
+#elapsed-time {    
+    margin-top: 10px;
+    text-align: center;
+}
+
 #status-container {
     display: flex;    
     justify-content: center;

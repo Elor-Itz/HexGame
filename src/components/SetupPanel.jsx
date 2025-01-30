@@ -23,17 +23,17 @@ const SetupPanel = ({ onStartGame }) => {
         <div id="setup-wrapper">
             <div id="setup-container">
                 <h1>Hex</h1>
-                <h2>Instructions:</h2>
+                <h2>How to Play:</h2>
                 <p>
                     Hex is a game played on a two-dimensional board by two players - <span style={{ color: 'black', fontWeight: 'bold' }}>Black</span> and <span style={{ color: 'white', fontWeight: 'bold' }}>White</span>.
                     Your goal is to form a connected path of your color, linking two opposite sides of the board: 
                     <span style={{ color: 'black', fontWeight: 'bold' }}> Black</span> connects top and bottom, while <span style={{ color: 'white', fontWeight: 'bold' }}>White</span> connects left and right.
                     The player who completes such a connection wins the game!
                 </p>
-                <label htmlFor="board-size">To begin, enter the size of your board (n x n):</label>
+                <label htmlFor="board-size-box">To begin, enter the size of your board (n x n):</label>
                 <input
                     type="number"
-                    id="board-size"
+                    id="board-size-box"
                     min="3"
                     max="19"
                     value={boardSize}

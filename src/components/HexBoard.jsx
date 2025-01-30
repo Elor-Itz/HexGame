@@ -3,13 +3,10 @@ import Hex from './Hex';
 
 // HexBoard component
 const HexBoard = ({ size, game, updateStatus, isBoardDisabled }) => {
-    const hexWidth = 60;
-    const hexHeight = 60;
-
-    // Set up container size based on board dimensions
-    const boardWidth = (size - 1) * hexWidth * 0.75 + hexWidth;
-    const boardHeight = size * hexHeight;
-
+    
+    const boardWidth = 1400;
+    const boardHeight = 850;   
+        
     const hexagons = [];
 
     for (let row = 0; row < size; row++) {

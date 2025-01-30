@@ -6,7 +6,12 @@
     display: inline-block;      
     position: relative;
     margin: 0;  
-}   
+}
+
+.hex-background {
+    width: 68px;
+    height: 68px;    
+}
 
 .hex:before {
   top: 2px;  

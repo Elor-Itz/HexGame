@@ -8,6 +8,14 @@
 }
 
 #board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
-    width: 1400px;  
+    z-index: 1;        
+}
+
+#status {
+    right: 0;    
+    z-index: 2;
 }
