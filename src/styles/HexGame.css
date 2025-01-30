@@ -1,0 +1,21 @@
+/* Game styling */
+
+#game-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    margin-top: 20px;
+}
+
+#board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;        
+}
+
+#status {
+    right: 0;    
+    z-index: 2;
+}

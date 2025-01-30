@@ -1,7 +1,7 @@
 import DisjointSetUnion from "./disjointSetUnion.js";
 
 // Game logic
-class HexGame {
+class HexGameLogic {
     // Initialize the game board
     constructor(size) {
         this.size = size;
@@ -77,4 +77,4 @@ class HexGame {
     }
 }
 
-export default HexGame;
+export default HexGameLogic;

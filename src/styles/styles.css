@@ -1,0 +1,38 @@
+/* General styling */
+
+body {
+    background-color: snow; 
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 20px;
+    margin-top: 20px;
+    background: lightSlateGray;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: darkSlateGray;
+}
+
+label {
+    font-size: 20px;
+    margin-right: 10px;    
+}
+
+h1 {
+    font-size: 80px;
+    margin-bottom: 5px;
+}
+
+p{
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: justify;
+}
