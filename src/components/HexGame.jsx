@@ -8,62 +8,47 @@ import '../styles/HexGame.css';
 // HexGame component
 const HexGame = () => {
     const [game, setGame] = useState(null);
-    const [status, setStatus] = useState("");
-    const [currentPlayer, setCurrentPlayer] = useState("Black");
     const [boardSize, setBoardSize] = useState(11);
-
-    useEffect(() => {
-        const newGameButton = document.getElementById("new-game");      
-
-        // Handler for new game button
-        const newGameHandler = () => {
-            document.getElementById("lobby-container").style.display = "block";
-            document.getElementById("main-container").style.display = "none";
-            setGame(null);
-            setStatus("");
-        };
-        
-        newGameButton.addEventListener("click", newGameHandler);
-
-        return () => {            
-            newGameButton.removeEventListener("click", newGameHandler);
-        };       
-    }, []);
-
+    const [status, setStatus] = useState("");
+    const [currentPlayer, setCurrentPlayer] = useState("Black");    
+    const [statusColor, setStatusColor] = useState("black");
+    const [isStatusVisible, setStatusVisiblity] = useState(true);
+    const [isLobbyVisible, setLobbyVisiblity] = useState(true);
+    const [isBoardDisabled, setIsBoardDisabled] = useState(false);
+    const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
+    
     // Create a new game
     const createGame = (size) => {
         const newGame = new HexGameLogic(size);
         setGame(newGame);
         setBoardSize(size);        
+        setLobbyVisiblity(false);
 
-        // Show the status once the game starts
-        const status = document.getElementById("status");
-        status.style.display = "block";
-        status.style.color = "black";
+        // Show the status once the game starts            
         setStatus("Black's turn");
+        setStatusColor("black");
         setCurrentPlayer("Black");
-        
-        // Hide the lobby and show the main game container
-        document.getElementById("lobby-container").style.display = "none";
-        document.getElementById("main-container").style.display = "flex";
+        setStatusVisiblity(true);
+        setIsBoardDisabled(false);
+        setIsSurrenderDisabled(false);          
     };
 
     // Update the status message
     const updateStatus = (game, winner) => {
         if (winner) {
-            // Display the winner and disable further moves
-            document.getElementById("status").style.color = "#df4204";
-            setStatus(`${winner} wins!`);            
+            // Display the winner and disable further moves           
+            setStatus(`${winner} wins!`);
+            setStatusColor("#df4204");           
             setCurrentPlayer(winner);
-            document.getElementById("game-container").style.pointerEvents = "none";            
-            document.getElementById("surrender").disabled = true;
+            setIsBoardDisabled(true);
+            setIsSurrenderDisabled(true);
         } else {
             // Switch the player
             const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
             game.currentPlayer = nextPlayer;
-            setCurrentPlayer(nextPlayer);
-            document.getElementById("status").style.color = nextPlayer === "Black" ? "black" : "white";            
+            setCurrentPlayer(nextPlayer);                  
             setStatus(`${nextPlayer}'s turn`);
+            setStatusColor(nextPlayer === "Black" ? "black" : "white");
         }
     };
 
@@ -74,27 +59,35 @@ const HexGame = () => {
     };
 
     // Handle new game button click
-    const handleNewGame = () => {
-        document.getElementById("lobby-container").style.display = "block";
-        document.getElementById("main-container").style.display = "none";
+    const handleNewGame = () => {        
+        setLobbyVisiblity(true);
         setGame(null);
         setStatus("");
+        setStatusVisiblity(false);
     };
 
     return (
         <div>
-            <div id="lobby-container">
-                <SetupPanel onStartGame={createGame} />
-            </div>
-            <div id="main-container">
-                {game && <HexBoard size={boardSize} game={game} updateStatus={updateStatus} />}
-                <StatusPanel
-                    status={status}
-                    currentPlayer={currentPlayer}
-                    onSurrender={handleSurrender}
-                    onNewGame={handleNewGame}
-                />
-            </div>
+            {isLobbyVisible ? (
+                <div id="lobby-container">
+                    <SetupPanel onStartGame={createGame} />
+                </div>
+            ) : (
+                <div id="game-container">
+                    {game && <HexBoard size={boardSize} game={game} updateStatus={updateStatus} isBoardDisabled={isBoardDisabled} />}
+                    {isStatusVisible && (
+                        <StatusPanel
+                            status={status}
+                            currentPlayer={currentPlayer}
+                            onSurrender={handleSurrender}
+                            onNewGame={handleNewGame}
+                            statusColor={statusColor}
+                            isVisible={isStatusVisible}
+                            isSurrenderDisabled={isSurrenderDisabled}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 };

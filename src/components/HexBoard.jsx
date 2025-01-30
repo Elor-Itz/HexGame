@@ -2,7 +2,7 @@ import React from 'react';
 import Hex from './Hex';
 
 // HexBoard component
-const HexBoard = ({ size, game, updateStatus }) => {
+const HexBoard = ({ size, game, updateStatus, isBoardDisabled }) => {
     const hexWidth = 60;
     const hexHeight = 60;
 
@@ -35,7 +35,7 @@ const HexBoard = ({ size, game, updateStatus }) => {
     }
 
     return (
-        <div id="game-container" style={{ width: `${boardWidth}px`, height: `${boardHeight}px`, position: 'relative' }}>
+        <div id="board-container" style={{ width: `${boardWidth}px`, height: `${boardHeight}px`, position: 'relative', pointerEvents: isBoardDisabled ? 'none' : 'auto' }}>            
             {hexagons}
         </div>
     );

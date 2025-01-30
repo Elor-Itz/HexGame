@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/SetupPanel.css';
 
 // SetupPanel component
 const SetupPanel = ({ onStartGame }) => {
+    const [boardSize, setBoardSize] = useState(11);
+
+    // Handle the input change event
+    const handleInputChange = (event) => {
+        setBoardSize(parseInt(event.target.value, 10));
+    };
+    
+    // Handle the start game button click
     const handleStartGame = () => {
-        const size = parseInt(document.getElementById("board-size").value, 10);
-        if (size >= 3 && size <= 19) {
-            onStartGame(size);
+        if (boardSize >= 3 && boardSize <= 19) {
+            onStartGame(boardSize);
         } else {
             alert("Please enter a size between 3 and 19.");
         }
@@ -24,7 +31,14 @@ const SetupPanel = ({ onStartGame }) => {
                     The player who completes such a connection wins the game!
                 </p>
                 <label htmlFor="board-size">To begin, enter the size of your board (n x n):</label>
-                <input type="number" id="board-size" min="3" max="19" defaultValue="11" />
+                <input
+                    type="number"
+                    id="board-size"
+                    min="3"
+                    max="19"
+                    value={boardSize}
+                    onChange={handleInputChange}
+                />
                 <button id="start-game" onClick={handleStartGame}>Start Game</button>
             </div>
         </div>

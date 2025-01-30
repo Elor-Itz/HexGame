@@ -22,6 +22,10 @@
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
+.hex:hover::before {
+    background: #b9b9b9;
+}
+
 /* Colors for players */
 .hex.White::before {
     background: white;

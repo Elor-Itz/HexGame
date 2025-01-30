@@ -1,13 +1,13 @@
 /* Game styling */
 
-#main-container {
+#game-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start; 
     margin-top: 20px;
 }
 
-#game-container {
+#board-container {
     position: relative;
     width: 1400px;  
 }

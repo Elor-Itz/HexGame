@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/Hex.css';
 
 // Hex component
 const Hex = ({ row, col, game, updateStatus, style }) => {
-    const [player, setPlayer] = useState(null);
+    const [player, setPlayer] = useState(null); 
+    
+    useEffect(() => {
+        setPlayer(game.board[row][col]);
+    }, [game.board, row, col]);
 
     // Handle the click event on the hexagon
     const handleClick = () => {
@@ -13,7 +17,7 @@ const Hex = ({ row, col, game, updateStatus, style }) => {
         game.makeMove(row, col);
         setPlayer(game.currentPlayer);
         updateStatus(game, game.checkWinner());
-    };
+    };    
 
     return (
         <div
