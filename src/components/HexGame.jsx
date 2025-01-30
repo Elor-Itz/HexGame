@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import HexGameLogic from '../utils/hexGame';
+import HexGameLogic from '../utils/hexGameLogic';
 import StatusPanel from './StatusPanel';
+import HexBoard from './HexBoard';
 
 const HexGame = () => {
     const [game, setGame] = useState(null);
     const [status, setStatus] = useState("");
     const [currentPlayer, setCurrentPlayer] = useState("Black");
+    const [boardSize, setBoardSize] = useState(11);
 
     useEffect(() => {        
         const startGameButton = document.getElementById("start-game");
@@ -44,7 +46,7 @@ const HexGame = () => {
     const createGame = (size) => {
         const newGame = new HexGameLogic(size);
         setGame(newGame);
-        createBoard(size, newGame);
+        setBoardSize(size);        
 
         // Show the status once the game starts
         const status = document.getElementById("status");
@@ -52,55 +54,6 @@ const HexGame = () => {
         status.style.color = "black";
         setStatus("Black's turn");
         setCurrentPlayer("Black");        
-    };
-
-    // Create a new board
-    const createBoard = (size, game) => {
-        const container = document.getElementById("game-container");
-        container.innerHTML = ""; // Clear the previous game board
-        container.style.pointerEvents = "auto"
-
-        const hexWidth = 60;
-        const hexHeight = 60;
-
-        // Set up container size based on board dimensions
-        const boardWidth = (size - 1) * hexWidth * 0.75 + hexWidth;
-        const boardHeight = size * hexHeight;
-
-        container.style.width = `${boardWidth}px`;
-        container.style.height = `${boardHeight}px`;
-
-        for (let row = 0; row < size; row++) {
-            const startCol = Math.max(0, row - (size - 1));
-            const endCol = Math.min(size - 1, row + size - 1);
-
-            for (let col = startCol; col <= endCol; col++) {
-                const hex = document.createElement("div");
-                hex.classList.add("hex");
-                hex.dataset.row = row;
-                hex.dataset.col = col;
-
-                // Adjust for staggered columns to create a rhombus shaped board
-                hex.style.position = "absolute";
-                hex.style.left = `${col * 59 + row * 29}px`;
-                hex.style.top = `${row * 44}px`;
-
-                // Add event listener for clicks
-                hex.addEventListener("click", () => {
-                    // Check if the cell is already filled
-                    if (game.board[row][col] !== null) return;
-                    // Make the move and update the board
-                    game.makeMove(row, col);
-                    hex.classList.add(game.currentPlayer);
-
-                    const winner = game.checkWinner();
-                    updateStatus(game, winner);
-                });
-
-                // Append the hex to the container
-                container.appendChild(hex);
-            }
-        }
     };
 
     // Update the status message
@@ -156,7 +109,7 @@ const HexGame = () => {
                 </div>                
             </div>
             <div id="main-container">
-                <div id="game-container"></div>
+                {game && <HexBoard size={boardSize} game={game} updateStatus={updateStatus} />}
                 <StatusPanel
                     status={status}
                     currentPlayer={currentPlayer}
