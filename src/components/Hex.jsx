@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/Hex.css';
 
 // Hex component
 const Hex = ({ row, col, game, updateStatus, style }) => {

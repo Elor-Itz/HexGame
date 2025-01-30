@@ -1,0 +1,29 @@
+/* General styling */
+
+body {
+    background-color: snow; 
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin-top: 20px;
+    background: lightSlateGray;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+label {
+    font-size: 20px;
+    margin-right: 10px;    
+}
+
+p{
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: justify;
+}

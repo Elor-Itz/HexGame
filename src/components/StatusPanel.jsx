@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/StatusPanel.css';
 
 const StatusPanel = ({ status, currentPlayer, onSurrender, onNewGame }) => {
     return (

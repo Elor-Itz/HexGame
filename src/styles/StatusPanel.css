@@ -1,0 +1,42 @@
+/* StatusPanel styles */
+
+#status {    
+    height: 300px;
+    width: 400px;
+    background: lightGray;    
+    flex-direction: column; 
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px; 
+    font-size: 20px;
+    display: none;
+}
+
+#status-container {
+    display: flex;    
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#button-container {
+    margin-top: 20px;
+    display: flex;    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#status-text{
+    margin-left: 10px;
+    margin-right: 50px;
+    font-weight: bold;   
+}

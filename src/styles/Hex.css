@@ -1,0 +1,47 @@
+/* Hexagon styling */
+.hex {
+    width: 60px;
+    height: 60px; 
+    background: black;
+    display: inline-block;      
+    position: relative;
+    margin: 0;  
+}   
+
+.hex:before {
+  top: 2px;  
+  left: 2px; 
+  height: calc(100% - 4px);  
+  width: calc(100% - 4px);
+  background: #ddd;
+  position: absolute;
+  content: '';
+}
+
+.hex, .hex:before { 
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Colors for players */
+.hex.White::before {
+    background: white;
+}
+
+.hex.Black::before {
+    background: black;
+}
+
+.hex.White, .hex.Black {
+    animation: place 0.3s ease-in-out;
+}
+
+@keyframes place {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import HexGame from './components/HexGame';
-import './styles.css';
+import './styles/styles.css';
 
 // App component
 function App() {
