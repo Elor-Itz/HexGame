@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import SetupPanel from './SetupPanel';
+import HexGameMenu from './HexGameMenu';
 import HexGameLogic from '../utils/hexGameLogic';
+import HexAILogic from '../utils/hexAILogic';
 import HexBoard from './HexBoard';
 import StatusPanel from './StatusPanel';
 import '../styles/HexGame.css';
 
 // HexGame component
 const HexGame = () => {
-    const [game, setGame] = useState(null);
+    const [game, setGame] = useState(null);    
+    const [gameMode, setGameMode] = useState('sandbox');
     const [boardSize, setBoardSize] = useState(11);
     const [status, setStatus] = useState("");
     const [currentPlayer, setCurrentPlayer] = useState("Black");    
@@ -16,13 +18,22 @@ const HexGame = () => {
     const [isLobbyVisible, setLobbyVisiblity] = useState(true);
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
     const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
-    
+    const [ai, setAI] = useState(null);
+
     // Create a new game
-    const createGame = (size) => {
+    const createGame = (size, mode) => {
         const newGame = new HexGameLogic(size);
         setGame(newGame);
+        setGameMode(mode);
         setBoardSize(size);        
         setLobbyVisiblity(false);
+        
+        if (mode === 'ai') {
+            const newAI = new HexAILogic(newGame);
+            setAI(newAI);
+        } else {
+            setAI(null);
+        }
 
         // Show the status once the game starts            
         setStatus("Black's turn");
@@ -49,7 +60,39 @@ const HexGame = () => {
             setCurrentPlayer(nextPlayer);                  
             setStatus(`${nextPlayer}'s turn`);
             setStatusColor(nextPlayer === "Black" ? "black" : "white");
+            
+            // If it's AI's turn, make a move            
+            if (nextPlayer === "White" && ai) {                
+                setIsBoardDisabled(true);
+                setTimeout(() => {
+                    const move = ai.makeMove();
+                    if (move) {
+                        // Simulate a click on the cell returned by the AI
+                        handleCellClick(move.row, move.col);
+                        handlePlayerSwitch();    
+                        setIsBoardDisabled(false);                    
+                    }
+                }, 1000);
+            }
         }
+    };    
+    
+    // Handle cell click
+    const handleCellClick = (row, col) => {
+        // Check if the cell is already filled
+        if (game.board[row][col] !== null) return;
+        // Make the move and update the board
+        game.makeMove(row, col);
+        updateStatus(game, game.checkWinner());        
+    };
+
+    // Handle player switch
+    const handlePlayerSwitch = () => {
+        const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
+        game.currentPlayer = nextPlayer;
+        setCurrentPlayer(nextPlayer);                  
+        setStatus(`${nextPlayer}'s turn`);
+        setStatusColor(nextPlayer === "Black" ? "black" : "white");        
     };
 
     // Handle surrender button click
@@ -70,11 +113,15 @@ const HexGame = () => {
         <div>
             {isLobbyVisible ? (
                 <div id="lobby-container">
-                    <SetupPanel onStartGame={createGame} />
+                    <HexGameMenu onStartGame={createGame} />
                 </div>
             ) : (
                 <div id="game-container">
-                    {game && <HexBoard size={boardSize} game={game} updateStatus={updateStatus} isBoardDisabled={isBoardDisabled} />}
+                    {game && <HexBoard
+                        size={boardSize}
+                        game={game}
+                        handleCellClick={handleCellClick}
+                        isBoardDisabled={isBoardDisabled} />}
                     {isStatusVisible && (
                         <StatusPanel
                             status={status}

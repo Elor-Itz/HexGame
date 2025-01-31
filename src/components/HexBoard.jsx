@@ -2,7 +2,7 @@ import React from 'react';
 import Hex from './Hex';
 
 // HexBoard component
-const HexBoard = ({ size, game, updateStatus, isBoardDisabled }) => {
+const HexBoard = ({ size, game, handleCellClick, isBoardDisabled }) => {
     
     const boardWidth = 1400;
     const boardHeight = 850;   
@@ -20,7 +20,7 @@ const HexBoard = ({ size, game, updateStatus, isBoardDisabled }) => {
                     row={row}
                     col={col}
                     game={game}
-                    updateStatus={updateStatus}
+                    handleCellClick={handleCellClick}
                     style={{
                         position: 'absolute',
                         left: `${col * 59 + row * 29}px`,
