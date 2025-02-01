@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HexGameMenu from './HexGameMenu';
 import HexGameLogic from '../utils/hexGameLogic';
 import HexAILogic from '../utils/hexAILogic';
@@ -8,8 +8,11 @@ import '../styles/HexGame.css';
 
 // HexGame component
 const HexGame = () => {
+    // Game settings
     const [game, setGame] = useState(null);    
     const [gameMode, setGameMode] = useState('sandbox');
+    const [ai, setAI] = useState(null);
+    const [timer, setTimer] = useState(0);
     const [boardSize, setBoardSize] = useState(11);
     const [status, setStatus] = useState("");
     const [currentPlayer, setCurrentPlayer] = useState("Black");    
@@ -17,18 +20,33 @@ const HexGame = () => {
     const [isStatusVisible, setStatusVisiblity] = useState(true);
     const [isLobbyVisible, setLobbyVisiblity] = useState(true);
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
-    const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
-    const [ai, setAI] = useState(null);
+    const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);    
+
+    // Timer effect
+    useEffect(() => {
+        let interval;
+        if (!isLobbyVisible && !status.includes('wins')) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer + 1);
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isLobbyVisible, status]);
+
+    // Refs for audio elements
+    const blackSoundRef = useRef(null);
+    const whiteSoundRef = useRef(null);
 
     // Create a new game
-    const createGame = (size, mode) => {
+    const createGame = (size, gameMode) => {
         const newGame = new HexGameLogic(size);
         setGame(newGame);
-        setGameMode(mode);
+        setGameMode(gameMode);
         setBoardSize(size);        
         setLobbyVisiblity(false);
         
-        if (mode === 'ai') {
+        if (gameMode === 'ai') {
             const newAI = new HexAILogic(newGame);
             setAI(newAI);
         } else {
@@ -41,7 +59,10 @@ const HexGame = () => {
         setCurrentPlayer("Black");
         setStatusVisiblity(true);
         setIsBoardDisabled(false);
-        setIsSurrenderDisabled(false);          
+        setIsSurrenderDisabled(false);
+        
+        // Set timer
+        setTimer(0);
     };
 
     // Update the status message
@@ -68,7 +89,8 @@ const HexGame = () => {
                     const move = ai.makeMove();
                     if (move) {
                         // Simulate a click on the cell returned by the AI
-                        handleCellClick(move.row, move.col);
+                        handleCellClick(move.row, move.col); 
+                        whiteSoundRef.current.play();                       
                         handlePlayerSwitch();    
                         setIsBoardDisabled(false);                    
                     }
@@ -78,11 +100,20 @@ const HexGame = () => {
     };    
     
     // Handle cell click
-    const handleCellClick = (row, col) => {
+    const handleCellClick = (row, col) => {        
         // Check if the cell is already filled
         if (game.board[row][col] !== null) return;
+        
         // Make the move and update the board
-        game.makeMove(row, col);
+        game.makeMove(row, col);        
+        
+        // Play sound based on current player
+        if (currentPlayer === "Black") {
+            blackSoundRef.current.play();
+        } else {
+            whiteSoundRef.current.play();
+        }
+
         updateStatus(game, game.checkWinner());        
     };
 
@@ -125,6 +156,7 @@ const HexGame = () => {
                     {isStatusVisible && (
                         <StatusPanel
                             status={status}
+                            timer={timer}
                             currentPlayer={currentPlayer}
                             onSurrender={handleSurrender}
                             onNewGame={handleNewGame}
@@ -135,6 +167,9 @@ const HexGame = () => {
                     )}
                 </div>
             )}
+            {/* Audio elements for sound effects */}
+            <audio ref={blackSoundRef} src="/sounds/black-sound.mp3" />
+            <audio ref={whiteSoundRef} src="/sounds/white-sound.mp3" />
         </div>
     );
 };
