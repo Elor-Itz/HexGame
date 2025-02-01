@@ -5,6 +5,7 @@ class DisjointSetUnion {
         this.rank = Array(size).fill(0);
     }
 
+    // Find operation with path compression
     find(x) {
         if (this.parent[x] !== x) {
             this.parent[x] = this.find(this.parent[x]); // Path compression
@@ -12,6 +13,7 @@ class DisjointSetUnion {
         return this.parent[x];
     }
 
+    // Union by rank
     union(x, y) {
         const rootX = this.find(x);
         const rootY = this.find(y);
@@ -25,6 +27,12 @@ class DisjointSetUnion {
                 this.rank[rootX]++;
             }
         }
+    }
+
+    // Reset the DSU state to its initial state
+    reset() {
+        this.parent = this.parent.map((_, i) => i);
+        this.rank = Array(this.rank.length).fill(0);
     }
 }
 
