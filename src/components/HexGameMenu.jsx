@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
+import Modal from './Modal';
 import '../styles/HexGameMenu.css';
 
-// Modal component
-const Modal = ({ message, onClose, children }) => {
-    return (
-        <div className="modal" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <span className="close" onClick={onClose}>&times;</span>
-                {message ? <p>{message}</p> : children}
-            </div>
-        </div>
-    );
-};
-
-// SetupPanel component
+// HexGameMenu component
 const HexGameMenu = ({ onStartGame }) => {
     const [boardSize, setBoardSize] = useState(11);
     const [mode, setMode] = useState('sandbox');
@@ -30,7 +19,7 @@ const HexGameMenu = ({ onStartGame }) => {
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
-            onStartGame(boardSize, mode);
+            onStartGame(mode, boardSize);
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
@@ -65,16 +54,16 @@ const HexGameMenu = ({ onStartGame }) => {
     };
 
     return (
-        <div id="setup-wrapper">
+        <div id="menu-wrapper">
             {!showSettings ? (
-                <div id="setup-container">
+                <div id="menu-container">
                     <h1 className="flash">Hex</h1>
                     <button onClick={handleNewGame}>New Game</button>
                     <button onClick={handleOptions}>Options</button> 
                     <button onClick={handleShowInstructions}>How to Play</button>                                       
                 </div>
             ) : (
-                <div id="setup-container">                    
+                <div id="menu-container">                    
                     <label htmlFor="board-size-box">
                         Board Size (n x n):
                     <input
@@ -102,6 +91,7 @@ const HexGameMenu = ({ onStartGame }) => {
                     {showInstructions && (
                         <div>
                             <h2>How to Play:</h2>
+                            <img src="/img/example.png" alt="Example" className="modal-image" />
                             <p>
                                 Hex is a game played on a two-dimensional board by two players - <span style={{ color: 'black', fontWeight: 'bold' }}>Black</span> and <span style={{ color: 'white', fontWeight: 'bold' }}>White</span>.
                                 Your goal is to form a connected path of your color, linking two opposite sides of the board: 

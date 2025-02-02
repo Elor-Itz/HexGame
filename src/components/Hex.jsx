@@ -3,11 +3,10 @@ import '../styles/Hex.css';
 
 // Hex component
 const Hex = ({ row, col, game, handleCellClick, style }) => {
-    const player = game.board[row][col];    
+    const player = game.board[row][col]; 
     
     // Handle the click event on the hexagon
-    const handleClick = () => {
-        console.log('player:', game.currentPlayer, 'row:', row, 'col:', col);
+    const handleClick = () => {        
         handleCellClick(row, col);
     };
 

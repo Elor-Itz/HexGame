@@ -1,19 +1,12 @@
 import React from 'react';
 import '../styles/StatusPanel.css';
 
-const StatusPanel = ({ status, timer, currentPlayer, onSurrender, onNewGame, statusColor, isVisible, isSurrenderDisabled }) => {       
-
-    // Format the time in MM:SS format
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    };
+const StatusPanel = ({ status, timer, currentPlayer, onSurrender, onNewGame, statusColor, isVisible, isSurrenderDisabled }) => {
 
     return (
         <div id="status" style = {{ display: isVisible ? 'block' : 'none' }}>
             <div id="elapsed-time">
-                Elapsed Time: {formatTime(timer)}
+                Elapsed Time: {timer}
             </div>
             <div id="status-container">
                 <div id="status-hex" className={`hex ${currentPlayer}`}></div>

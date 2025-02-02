@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import HexGameMenu from './HexGameMenu';
 import HexGameLogic from '../utils/hexGameLogic';
 import HexAILogic from '../utils/hexAILogic';
+import useTimer from '../hooks/useTimer';
 import HexBoard from './HexBoard';
 import StatusPanel from './StatusPanel';
 import '../styles/HexGame.css';
@@ -11,40 +12,29 @@ const HexGame = () => {
     // Game settings
     const [game, setGame] = useState(null);    
     const [gameMode, setGameMode] = useState('sandbox');
-    const [ai, setAI] = useState(null);
-    const [timer, setTimer] = useState(0);
+    const [ai, setAI] = useState(null);    
     const [boardSize, setBoardSize] = useState(11);
+    
+    // Game status
     const [status, setStatus] = useState("");
     const [currentPlayer, setCurrentPlayer] = useState("Black");    
     const [statusColor, setStatusColor] = useState("black");
     const [isStatusVisible, setStatusVisiblity] = useState(true);
     const [isLobbyVisible, setLobbyVisiblity] = useState(true);
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
-    const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);    
+    const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
 
-    // Timer effect
-    useEffect(() => {
-        let interval;
-        if (!isLobbyVisible && !status.includes('wins')) {
-            interval = setInterval(() => {
-                setTimer((prevTimer) => prevTimer + 1);
-            }, 1000);
-        }
-
-        return () => clearInterval(interval);
-    }, [isLobbyVisible, status]);
-
+    // Timer hook
+    const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));
+  
     // Refs for audio elements
     const blackSoundRef = useRef(null);
     const whiteSoundRef = useRef(null);
 
-    // Create a new game
-    const createGame = (size, gameMode) => {
-        const newGame = new HexGameLogic(size);
-        setGame(newGame);
-        setGameMode(gameMode);
-        setBoardSize(size);        
-        setLobbyVisiblity(false);
+    // Initialize a new game
+    const initializeGame = (gameMode, boardSize) => {
+        // Set up game environment
+        const newGame = new HexGameLogic(boardSize); 
         
         if (gameMode === 'ai') {
             const newAI = new HexAILogic(newGame);
@@ -53,51 +43,69 @@ const HexGame = () => {
             setAI(null);
         }
 
-        // Show the status once the game starts            
-        setStatus("Black's turn");
-        setStatusColor("black");
-        setCurrentPlayer("Black");
-        setStatusVisiblity(true);
-        setIsBoardDisabled(false);
-        setIsSurrenderDisabled(false);
-        
-        // Set timer
-        setTimer(0);
+        updateGameEnvironment(newGame, gameMode, boardSize, false, true, resetTimer());      
+        updateStatus("Black's turn", "black", "Black", false, false);             
     };
 
-    // Update the status message
-    const updateStatus = (game, winner) => {
+    // Update game environment
+    const updateGameEnvironment = (game, gameMode, size, isLobbyVisible, isStatusVisible, timerFunction ) => {
+        setGame(game);
+        setGameMode(gameMode);
+        setBoardSize(size);
+        setLobbyVisiblity(isLobbyVisible);
+        setStatusVisiblity(isStatusVisible);
+        if (timerFunction) {
+            timerFunction();
+        }
+    };
+
+    // Handle game update
+    const updateGame = (game, winner) => {
         if (winner) {
-            // Display the winner and disable further moves           
-            setStatus(`${winner} wins!`);
-            setStatusColor("#df4204");           
-            setCurrentPlayer(winner);
-            setIsBoardDisabled(true);
-            setIsSurrenderDisabled(true);
+            // Display the winner and disable further moves
+            updateStatus(`${winner} wins!`, "#df4204", winner, true, true);
+            stopTimer();
         } else {
             // Switch the player
-            const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
-            game.currentPlayer = nextPlayer;
-            setCurrentPlayer(nextPlayer);                  
-            setStatus(`${nextPlayer}'s turn`);
-            setStatusColor(nextPlayer === "Black" ? "black" : "white");
+            switchPlayer(game);            
             
             // If it's AI's turn, make a move            
-            if (nextPlayer === "White" && ai) {                
-                setIsBoardDisabled(true);
-                setTimeout(() => {
-                    const move = ai.makeMove();
-                    if (move) {
-                        // Simulate a click on the cell returned by the AI
-                        handleCellClick(move.row, move.col); 
-                        whiteSoundRef.current.play();                       
-                        handlePlayerSwitch();    
-                        setIsBoardDisabled(false);                    
-                    }
-                }, 1000);
+            if (game.currentPlayer === "White" && ai) {                
+                playAITurn(game, ai);
             }
         }
-    };    
+    };
+    
+    // Update the status message
+    const updateStatus = (status, statusColor, currentPlayer, isBoardDisabled, isSurrenderDisabled ) => {
+        setStatus(status);
+        setStatusColor(statusColor);
+        setCurrentPlayer(currentPlayer);
+        setStatusVisiblity(true);
+        setIsBoardDisabled(isBoardDisabled);
+        setIsSurrenderDisabled(isSurrenderDisabled);
+    };
+
+    // Handle player switch
+    const switchPlayer = (game) => {
+        const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
+        game.currentPlayer = nextPlayer;
+        updateStatus(`${nextPlayer}'s turn`, nextPlayer === "Black" ? "black" : "white", nextPlayer, false, false);        
+    };       
+
+    // Play AI turn
+    const playAITurn = (game, ai) => {
+        setIsBoardDisabled(true);
+        setTimeout(() => {
+            const move = ai.makeMove();
+            if (move) {
+                // Simulate a click on the cell returned by the AI
+                handleCellClick(move.row, move.col); 
+                whiteSoundRef.current.play();                       
+                switchPlayer(game);
+            }
+        }, 1000);
+    }
     
     // Handle cell click
     const handleCellClick = (row, col) => {        
@@ -105,7 +113,8 @@ const HexGame = () => {
         if (game.board[row][col] !== null) return;
         
         // Make the move and update the board
-        game.makeMove(row, col);        
+        game.makeMove(row, col);
+        console.log('player:', game.currentPlayer, 'row:', row, 'col:', col, 'time:', formatTime(timer));        
         
         // Play sound based on current player
         if (currentPlayer === "Black") {
@@ -114,49 +123,38 @@ const HexGame = () => {
             whiteSoundRef.current.play();
         }
 
-        updateStatus(game, game.checkWinner());        
-    };
-
-    // Handle player switch
-    const handlePlayerSwitch = () => {
-        const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
-        game.currentPlayer = nextPlayer;
-        setCurrentPlayer(nextPlayer);                  
-        setStatus(`${nextPlayer}'s turn`);
-        setStatusColor(nextPlayer === "Black" ? "black" : "white");        
-    };
+        updateGame(game, game.checkWinner());        
+    };    
 
     // Handle surrender button click
     const handleSurrender = () => {
         const winner = currentPlayer === "Black" ? "White" : "Black";
-        updateStatus(game, winner);
+        updateGame(game, winner);
     };
 
     // Handle new game button click
-    const handleNewGame = () => {        
-        setLobbyVisiblity(true);
-        setGame(null);
+    const handleNewGame = () => { 
+        updateGameEnvironment(null, gameMode, boardSize, true, false), stopTimer();
         setStatus("");
-        setStatusVisiblity(false);
     };
 
     return (
         <div>
             {isLobbyVisible ? (
                 <div id="lobby-container">
-                    <HexGameMenu onStartGame={createGame} />
+                    <HexGameMenu onStartGame={initializeGame} />
                 </div>
             ) : (
                 <div id="game-container">
                     {game && <HexBoard
-                        size={boardSize}
                         game={game}
+                        boardSize={boardSize}                        
                         handleCellClick={handleCellClick}
                         isBoardDisabled={isBoardDisabled} />}
                     {isStatusVisible && (
                         <StatusPanel
                             status={status}
-                            timer={timer}
+                            timer={formatTime(timer)}
                             currentPlayer={currentPlayer}
                             onSurrender={handleSurrender}
                             onNewGame={handleNewGame}
@@ -168,8 +166,8 @@ const HexGame = () => {
                 </div>
             )}
             {/* Audio elements for sound effects */}
-            <audio ref={blackSoundRef} src="/sounds/black-sound.mp3" />
-            <audio ref={whiteSoundRef} src="/sounds/white-sound.mp3" />
+            <audio ref={blackSoundRef} src="/sound/black.mp3" />
+            <audio ref={whiteSoundRef} src="/sound/white.mp3" />
         </div>
     );
 };
