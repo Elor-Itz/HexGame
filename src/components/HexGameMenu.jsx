@@ -10,6 +10,7 @@ const HexGameMenu = ({ onStartGame }) => {
     const [modalMessage, setModalMessage] = useState('');
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    const [swapRule, setSwapRule] = useState(false);
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -19,7 +20,7 @@ const HexGameMenu = ({ onStartGame }) => {
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
-            onStartGame(mode, boardSize);
+            onStartGame(mode, boardSize, swapRule);
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
@@ -81,6 +82,15 @@ const HexGameMenu = ({ onStartGame }) => {
                             <option value="sandbox">Sandbox</option>
                             <option value="ai">Versus AI</option>
                         </select>
+                    </label>
+                    <label htmlFor="swap-rule-box">
+                        Enable Swap Rule:
+                        <input
+                            type="checkbox"
+                            id="swap-rule-box"
+                            checked={swapRule}
+                            onChange={(e) => setSwapRule(e.target.checked)}
+                        />
                     </label>
                     <button id="start-game" onClick={handleStartGame}>Start Game</button>
                     <button onClick={handleReturn}>Return</button>

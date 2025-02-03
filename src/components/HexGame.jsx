@@ -3,6 +3,7 @@ import HexGameMenu from './HexGameMenu';
 import HexGameLogic from '../utils/hexGameLogic';
 import HexAILogic from '../utils/hexAILogic';
 import useTimer from '../hooks/useTimer';
+import useTurnCounter from '../hooks/useTurnCounter';
 import HexBoard from './HexBoard';
 import StatusPanel from './StatusPanel';
 import '../styles/HexGame.css';
@@ -14,37 +15,44 @@ const HexGame = () => {
     const [gameMode, setGameMode] = useState('sandbox');
     const [ai, setAI] = useState(null);    
     const [boardSize, setBoardSize] = useState(11);
+    const [isLobbyVisible, setLobbyVisiblity] = useState(true);
+    const [isStatusVisible, setStatusVisiblity] = useState(true);
+
+    // Swap rule
+    const [swapRuleEnabled, setSwapRuleEnabled] = useState(false);      
     
     // Game status
-    const [status, setStatus] = useState("");
-    const [currentPlayer, setCurrentPlayer] = useState("Black");    
+    const [status, setStatus] = useState(""); 
     const [statusColor, setStatusColor] = useState("black");
-    const [isStatusVisible, setStatusVisiblity] = useState(true);
-    const [isLobbyVisible, setLobbyVisiblity] = useState(true);
+    const [currentPlayer, setCurrentPlayer] = useState("Black");    
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
     const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
 
     // Timer hook
     const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));
+
+    // Turn counter hook
+    const { turn, incrementTurn, updateTurn, resetTurn } = useTurnCounter();
   
     // Refs for audio elements
     const blackSoundRef = useRef(null);
     const whiteSoundRef = useRef(null);
 
     // Initialize a new game
-    const initializeGame = (gameMode, boardSize) => {
-        // Set up game environment
+    const initializeGame = (gameMode, boardSize, swapRule) => {        
         const newGame = new HexGameLogic(boardSize); 
-        
-        if (gameMode === 'ai') {
-            const newAI = new HexAILogic(newGame);
-            setAI(newAI);
-        } else {
-            setAI(null);
-        }
+       
+        // Set AI
+        const newAI = gameMode === 'ai' ? new HexAILogic(newGame) : null;
+        setAI(newAI);        
 
+        // Set swap rule
+        setSwapRuleEnabled(swapRule);        
+
+        // Set up game environment
         updateGameEnvironment(newGame, gameMode, boardSize, false, true, resetTimer());      
-        updateStatus("Black's turn", "black", "Black", false, false);             
+        updateStatus("Black's turn", "black", "Black", false, false);
+        incrementTurn();           
     };
 
     // Update game environment
@@ -64,47 +72,53 @@ const HexGame = () => {
         if (winner) {
             // Display the winner and disable further moves
             updateStatus(`${winner} wins!`, "#df4204", winner, true, true);
+            console.log(winner, "wins, turns:", turn - 1)
             stopTimer();
+            resetTurn();
         } else {
             // Switch the player
-            switchPlayer(game);            
+            switchPlayer(game);
             
             // If it's AI's turn, make a move            
-            if (game.currentPlayer === "White" && ai) {                
+            if (game.currentPlayer === "White" && ai) {                               
                 playAITurn(game, ai);
-            }
-        }
+                incrementTurn();                              
+            } else {
+                incrementTurn();
+            }        
+        }        
     };
     
     // Update the status message
-    const updateStatus = (status, statusColor, currentPlayer, isBoardDisabled, isSurrenderDisabled ) => {
+    const updateStatus = ( status, statusColor, currentPlayer, isBoardDisabled, isSurrenderDisabled ) => {        
         setStatus(status);
         setStatusColor(statusColor);
-        setCurrentPlayer(currentPlayer);
-        setStatusVisiblity(true);
+        setCurrentPlayer(currentPlayer);        
         setIsBoardDisabled(isBoardDisabled);
         setIsSurrenderDisabled(isSurrenderDisabled);
+        console.log("Turn number: ", turn);
     };
 
     // Handle player switch
     const switchPlayer = (game) => {
         const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
         game.currentPlayer = nextPlayer;
-        updateStatus(`${nextPlayer}'s turn`, nextPlayer === "Black" ? "black" : "white", nextPlayer, false, false);        
+        updateStatus(`${nextPlayer}'s turn`, nextPlayer === "Black" ? "black" : "white", nextPlayer, false, false);             
     };       
 
-    // Play AI turn
+    // Handle AI turn
     const playAITurn = (game, ai) => {
-        setIsBoardDisabled(true);
+        setIsBoardDisabled(true);        
         setTimeout(() => {
             const move = ai.makeMove();
-            if (move) {
+            if (move) {    
                 // Simulate a click on the cell returned by the AI
-                handleCellClick(move.row, move.col); 
-                whiteSoundRef.current.play();                       
+                handleCellClick(move.row, move.col);
+                whiteSoundRef.current.play(); 
                 switchPlayer(game);
+                setIsBoardDisabled(false);                                                                       
             }
-        }, 1000);
+        }, 1000);                    
     }
     
     // Handle cell click
@@ -114,7 +128,7 @@ const HexGame = () => {
         
         // Make the move and update the board
         game.makeMove(row, col);
-        console.log('player:', game.currentPlayer, 'row:', row, 'col:', col, 'time:', formatTime(timer));        
+        console.log('player:', game.currentPlayer, 'row:', row, 'col:', col, 'time:', formatTime(timer));
         
         // Play sound based on current player
         if (currentPlayer === "Black") {
@@ -124,8 +138,17 @@ const HexGame = () => {
         }
 
         updateGame(game, game.checkWinner());        
-    };    
-
+    };
+    
+    // Handle swap rule
+    const handleSwapRule = () => {
+        if (window.confirm("Do you want to swap positions?")) {
+            // Swap positions
+            setCurrentPlayer("White");
+            updateStatus("White's turn", "white", "White", false, false);
+        }
+    };
+    
     // Handle surrender button click
     const handleSurrender = () => {
         const winner = currentPlayer === "Black" ? "White" : "Black";

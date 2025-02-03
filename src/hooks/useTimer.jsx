@@ -29,12 +29,13 @@ const useTimer = (isRunning) => {
         clearInterval(intervalRef.current);
     };
 
-    // Format the timer value into MM:SS format
+    // Format the timer value into HH:MM:SS format
     const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    };    
+        return `${hrs < 10 ? '0' : ''}${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };   
 
     return { timer, resetTimer, stopTimer, formatTime };
 };
