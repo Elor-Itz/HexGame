@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/Hex.css';
+import { getPlayerClass } from '../hooks/usePlayerColors';
 
 // Hex component
 const Hex = ({ row, col, game, handleCellClick, style, colorScheme }) => {
@@ -10,17 +11,9 @@ const Hex = ({ row, col, game, handleCellClick, style, colorScheme }) => {
         handleCellClick(row, col);
     };
 
-    // Get the player class based on the color scheme
-    const getPlayerClass = () => {
-        if (colorScheme === 'red-blue') {
-            return player === 'Black' ? 'Red' : player === 'White' ? 'Blue' : '';
-        }
-        return player;
-    };
-
     return (
         <div
-            className={`hex ${getPlayerClass()}`}
+            className={`hex ${getPlayerClass(player, colorScheme)}`}
             data-row={row}
             data-col={col}
             onClick={handleClick}
