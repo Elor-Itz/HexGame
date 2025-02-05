@@ -18,6 +18,9 @@ const HexGame = () => {
     const [isLobbyVisible, setLobbyVisiblity] = useState(true);
     const [isStatusVisible, setStatusVisiblity] = useState(true);
 
+    // Color scheme state
+    const [colorScheme, setColorScheme] = useState('black-white');
+
     // Swap rule
     const [swapRuleEnabled, setSwapRuleEnabled] = useState(false);      
     
@@ -52,7 +55,8 @@ const HexGame = () => {
         // Set up game environment
         updateGameEnvironment(newGame, gameMode, boardSize, false, true, resetTimer());      
         updateStatus("Black's turn", "black", "Black", false, false);
-        incrementTurn();           
+        incrementTurn();    
+        console.log("color scheme", colorScheme);       
     };
 
     // Update game environment
@@ -165,7 +169,7 @@ const HexGame = () => {
         <div>
             {isLobbyVisible ? (
                 <div id="lobby-container">
-                    <HexGameMenu onStartGame={initializeGame} />
+                    <HexGameMenu onStartGame={initializeGame} setColorScheme={setColorScheme} />
                 </div>
             ) : (
                 <div id="game-container">
@@ -173,7 +177,8 @@ const HexGame = () => {
                         game={game}
                         boardSize={boardSize}                        
                         handleCellClick={handleCellClick}
-                        isBoardDisabled={isBoardDisabled} />}
+                        isBoardDisabled={isBoardDisabled}
+                        colorScheme={colorScheme} />}
                     {isStatusVisible && (
                         <StatusPanel
                             status={status}

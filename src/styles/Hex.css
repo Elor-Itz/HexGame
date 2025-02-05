@@ -40,7 +40,15 @@
     background: black;
 }
 
-.hex.White, .hex.Black {
+.hex.Red::before {
+    background: red;
+}
+
+.hex.Blue::before {
+    background: blue;
+}
+
+.hex.White, .hex.Black, .hex.Red, .hex.Blue {
     animation: place 0.3s ease-in-out;
 }
 

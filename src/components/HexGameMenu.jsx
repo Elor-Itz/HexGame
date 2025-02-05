@@ -3,7 +3,7 @@ import Modal from './Modal';
 import '../styles/HexGameMenu.css';
 
 // HexGameMenu component
-const HexGameMenu = ({ onStartGame }) => {
+const HexGameMenu = ({ onStartGame, setColorScheme }) => {
     const [boardSize, setBoardSize] = useState(11);
     const [mode, setMode] = useState('sandbox');
     const [showModal, setShowModal] = useState(false);
@@ -11,6 +11,7 @@ const HexGameMenu = ({ onStartGame }) => {
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [swapRule, setSwapRule] = useState(false);
+    const [colorScheme, setLocalColorScheme] = useState('black-white');
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -21,6 +22,7 @@ const HexGameMenu = ({ onStartGame }) => {
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
             onStartGame(mode, boardSize, swapRule);
+            setColorScheme(colorScheme);
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
@@ -91,6 +93,13 @@ const HexGameMenu = ({ onStartGame }) => {
                             checked={swapRule}
                             onChange={(e) => setSwapRule(e.target.checked)}
                         />
+                    </label>
+                    <label htmlFor="color-scheme-box">
+                        Color Scheme:
+                        <select id="color-scheme-box" value={colorScheme} onChange={(e) => setLocalColorScheme(e.target.value)}>
+                            <option value="black-white">Black/White</option>
+                            <option value="red-blue">Red/Blue</option>
+                        </select>
                     </label>
                     <button id="start-game" onClick={handleStartGame}>Start Game</button>
                     <button onClick={handleReturn}>Return</button>
