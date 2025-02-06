@@ -27,7 +27,7 @@ const HexGame = () => {
     
     // Game status
     const [status, setStatus] = useState("");    
-    const [currentPlayer, setCurrentPlayer] = useState("Black");    
+    const [currentPlayer, setCurrentPlayer] = useState("Player1");    
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
     const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
 
@@ -87,7 +87,7 @@ const HexGame = () => {
             switchPlayer(game);
             
             // If it's AI's turn, make a move            
-            if (game.currentPlayer === "White" && ai) {                               
+            if (game.currentPlayer === "Player2" && ai) {                               
                 playAITurn(game, ai);
                 incrementTurn();                              
             } else {
@@ -108,7 +108,7 @@ const HexGame = () => {
 
     // Handle player switch    
     const switchPlayer = (game) => {
-        const nextPlayer = game.currentPlayer === "Black" ? "White" : "Black";
+        const nextPlayer = game.currentPlayer === "Player1" ? "Player2" : "Player1";
         game.currentPlayer = nextPlayer;        
         const nextPlayerName = getPlayerClass(nextPlayer, colorScheme);        
         updateStatus(`${nextPlayerName}'s turn`, nextPlayer, false, false, false);
@@ -139,7 +139,7 @@ const HexGame = () => {
         console.log('player:', game.currentPlayer, 'row:', row, 'col:', col, 'time:', formatTime(timer));
         
         // Play sound based on current player
-        if (currentPlayer === "Black") {
+        if (currentPlayer === "Player1") {
             blackSoundRef.current.play();
         } else {
             whiteSoundRef.current.play();
@@ -152,14 +152,14 @@ const HexGame = () => {
     const handleSwapRule = () => {
         if (window.confirm("Do you want to swap positions?")) {
             // Swap positions
-            setCurrentPlayer("White");
-            updateStatus("White's turn", "White", false, false, false);
+            setCurrentPlayer("Player2");
+            updateStatus("Player2's turn", "Player2", false, false, false);
         }
     };
     
     // Handle surrender button click
     const handleSurrender = () => {
-        const winner = currentPlayer === "Black" ? "White" : "Black";
+        const winner = currentPlayer === "Player1" ? "Player2" : "Player1";
         updateGame(game, winner);
     };
 

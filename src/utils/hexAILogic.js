@@ -4,7 +4,7 @@ class HexAILogic {
     }
 
     makeMove() {
-        if (this.game.currentPlayer !== "White") {
+        if (this.game.currentPlayer !== "Player2") {
             return null;
         }
 
@@ -43,8 +43,8 @@ class HexAILogic {
 
     minimax(game, depth, alpha, beta, isMaximizing) {
         const winner = game.checkWinner();
-        if (winner === "White") return 1000;
-        if (winner === "Black") return -1000;
+        if (winner === "Player2") return 1000;
+        if (winner === "Player1") return -1000;
         if (depth === 0) return this.evaluateBoard(game);
 
         if (isMaximizing) {
@@ -84,7 +84,7 @@ class HexAILogic {
 
     resetDSU(row, col) {
         const index = this.game.index(row, col);
-        if (this.game.currentPlayer === "Black") {
+        if (this.game.currentPlayer === "Player1") {
             this.game.dsuB.reset(index);
         } else {
             this.game.dsuW.reset(index);
@@ -99,9 +99,9 @@ class HexAILogic {
 
         for (let row = 0; row < game.size; row++) {
             for (let col = 0; col < game.size; col++) {
-                if (game.board[row][col] === "White") {
+                if (game.board[row][col] === "Player2") {
                     score += 10; // AI's move
-                } else if (game.board[row][col] === "Black") {
+                } else if (game.board[row][col] === "Player1") {
                     score -= 50; // Heavy penalty for opponent moves
                 }
             }
@@ -122,10 +122,10 @@ class HexAILogic {
 
         for (let row = 0; row < game.size; row++) {
             for (let col = 0; col < game.size; col++) {
-                if (game.board[row][col] === "Black") {
+                if (game.board[row][col] === "Player1") {
                     let connections = 0;
                     for (const [r, c] of game.neighbors(row, col)) {
-                        if (game.board[r][c] === "Black") {
+                        if (game.board[r][c] === "Player1") {
                             connections++;
                         }
                     }
