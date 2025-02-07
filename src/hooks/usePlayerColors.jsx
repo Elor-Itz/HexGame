@@ -1,47 +1,53 @@
 import { useState } from 'react';
 
-// Get player class based on the color scheme
-export const getPlayerClass = (player, colorScheme) => {
-    if (colorScheme === 'red-blue') {
-        return player === 'Player1' ? 'Red' : player === 'Player2' ? 'Blue' : '';
-    }
-    return player === 'Player1' ? 'Black' : player === 'Player2' ? 'White' : '';
-};
-
-// Get player color based on the color scheme
-export const getPlayerColor = (player, colorScheme) => {
-    if (colorScheme === 'red-blue') {
-        return player === 'Player1' ? 'red' : player === 'Player2' ? 'blue' : '';
-    }
-    return player === 'Player1' ? 'black' : player === 'Player2' ? 'white' : '';
-};
-
 // Get win text color based on the player
 export const getWinTextColor = (player) => {
-    return player === 'Player1' ? '#df4204' : '#00ffff';
+    return player === 'Player1' ? '#df4204' : '#6d96e7';
 };
 
 // Manage player colors
-const usePlayerColors = (initialScheme = 'black-white') => {
-    const [colorScheme, setColorScheme] = useState(initialScheme);
-    const [playerClass, setPlayerClass] = useState(getPlayerClass('Player1', initialScheme));
-    const [playerColor, setPlayerColor] = useState(getPlayerColor('Player1', initialScheme));
+const usePlayerColors = () => {
+    const [colorScheme, setColorScheme] = useState('');    
+    const [playerClass, setPlayerClass] = useState('');    
+    const [playerColor, setPlayerColor] = useState('');
+
+    // Get player class based on the color scheme
+    const getPlayerAttributes = (player, colorScheme) => {
+        let className = '', color = '';
+        if (colorScheme === 'red-blue') {
+            if (player === 'Player1') {
+                className = 'Red';
+                color = 'red';
+            } else if (player === 'Player2') {
+                className = 'Blue';
+                color = 'blue';
+            }
+        } else {
+            if (player === 'Player1') {
+                className = 'Black';
+                color = 'black';
+            } else if (player === 'Player2') {
+                className = 'White';
+                color = 'white';
+            }
+        }
+        return { className, color };
+    };
 
     // Update the player color and class
-    const updatePlayerColorAndClass = (player, isWinner = false) => {
-        const color = isWinner ? getWinTextColor(player) : getPlayerColor(player, colorScheme);
-        setPlayerColor(color);
-        setPlayerClass(getPlayerClass(player, colorScheme));
-    };
+    const updatePlayerAttributes = (player, colorScheme, isWinner = false) => {
+        const { className, color  } = getPlayerAttributes(player, colorScheme);        
+        setPlayerClass(className);
+        setPlayerColor(isWinner ? getWinTextColor(player) : color);     
+    };    
 
     return {
         colorScheme,
-        setColorScheme,
+        setColorScheme,        
         playerClass,
         playerColor,
-        updatePlayerColorAndClass,
-        getPlayerClass,
-        getPlayerColor,        
+        getPlayerAttributes,
+        updatePlayerAttributes,                       
     };
 };
 

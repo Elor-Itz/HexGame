@@ -3,7 +3,7 @@ import Modal from './Modal';
 import '../styles/HexGameMenu.css';
 
 // HexGameMenu component
-const HexGameMenu = ({ onStartGame, setColorScheme }) => {
+const HexGameMenu = ({ onStartGame }) => {
     const [boardSize, setBoardSize] = useState(11);
     const [mode, setMode] = useState('sandbox');
     const [showModal, setShowModal] = useState(false);
@@ -11,7 +11,7 @@ const HexGameMenu = ({ onStartGame, setColorScheme }) => {
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [swapRule, setSwapRule] = useState(false);
-    const [colorScheme, setLocalColorScheme] = useState('black-white');
+    const [colorScheme, setLocalColorScheme] = useState();
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -21,8 +21,7 @@ const HexGameMenu = ({ onStartGame, setColorScheme }) => {
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
-            onStartGame(mode, boardSize, swapRule);
-            setColorScheme(colorScheme);
+            onStartGame(mode, boardSize, swapRule, colorScheme);            
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
