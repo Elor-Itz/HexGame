@@ -2,7 +2,7 @@ import React from 'react';
 import Hex from './Hex';
 
 // HexBoard component
-const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled }) => {
+const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled, colorScheme, getPlayerAttributes }) => {
     
     const boardWidth = 1400;
     const boardHeight = 850;   
@@ -14,6 +14,9 @@ const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled }) => {
         const endCol = Math.min(boardSize - 1, row + boardSize - 1);
 
         for (let col = startCol; col <= endCol; col++) {
+            const player = game.board[row][col];
+            const { className: color } = getPlayerAttributes(player, colorScheme);
+
             hexagons.push(
                 <Hex
                     key={`${row}-${col}`}
@@ -21,6 +24,8 @@ const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled }) => {
                     col={col}
                     game={game}
                     handleCellClick={handleCellClick}
+                    color={color}
+                    isBoardDisabled={isBoardDisabled}
                     style={{
                         position: 'absolute',
                         left: `${col * 59 + row * 29}px`,
@@ -32,7 +37,7 @@ const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled }) => {
     }
 
     return (
-        <div id="board-container" style={{ width: `${boardWidth}px`, height: `${boardHeight}px`, position: 'relative', pointerEvents: isBoardDisabled ? 'none' : 'auto' }}>            
+        <div className="hex-board" style={{ width: boardWidth, height: boardHeight, position: 'relative' }}>
             {hexagons}
         </div>
     );

@@ -6,7 +6,7 @@ class HexGameLogic {
     constructor(size) {
         this.size = size;
         this.board = Array.from({ length: size }, () => Array(size).fill(null));
-        this.currentPlayer = "Black";
+        this.currentPlayer = "Player1";
 
         // Assign unique indices to virtual nodes
         this.topNode = size * size;
@@ -56,7 +56,7 @@ class HexGameLogic {
         for (const [r, c] of this.neighbors(row, col)) {
             const neighborIndex = this.index(r, c);
             if (this.board[r][c] === this.currentPlayer) {
-                if (this.currentPlayer === "Black") {
+                if (this.currentPlayer === "Player1") {
                     this.dsuB.union(index, neighborIndex);
                 } else {
                     this.dsuW.union(index, neighborIndex);
@@ -68,10 +68,10 @@ class HexGameLogic {
     // Check the winner by using union-find
     checkWinner() {
         if (this.dsuB.find(this.topNode) === this.dsuB.find(this.bottomNode)) {
-            return "Black";
+            return "Player1";
         }
         if (this.dsuW.find(this.leftNode) === this.dsuW.find(this.rightNode)) {
-            return "White";
+            return "Player2";
         }        
         return null;
     }

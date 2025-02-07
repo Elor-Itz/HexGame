@@ -11,6 +11,7 @@ const HexGameMenu = ({ onStartGame }) => {
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [swapRule, setSwapRule] = useState(false);
+    const [colorScheme, setLocalColorScheme] = useState();
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -20,7 +21,7 @@ const HexGameMenu = ({ onStartGame }) => {
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
-            onStartGame(mode, boardSize, swapRule);
+            onStartGame(mode, boardSize, swapRule, colorScheme);            
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
@@ -91,6 +92,13 @@ const HexGameMenu = ({ onStartGame }) => {
                             checked={swapRule}
                             onChange={(e) => setSwapRule(e.target.checked)}
                         />
+                    </label>
+                    <label htmlFor="color-scheme-box">
+                        Color Scheme:
+                        <select id="color-scheme-box" value={colorScheme} onChange={(e) => setLocalColorScheme(e.target.value)}>
+                            <option value="black-white">Black/White</option>
+                            <option value="red-blue">Red/Blue</option>
+                        </select>
                     </label>
                     <button id="start-game" onClick={handleStartGame}>Start Game</button>
                     <button onClick={handleReturn}>Return</button>

@@ -1,7 +1,8 @@
 import React from 'react';
 import '../styles/StatusPanel.css';
 
-const StatusPanel = ({ status, timer, currentPlayer, onSurrender, onNewGame, statusColor, isVisible, isSurrenderDisabled }) => {
+// StatusPanel component
+const StatusPanel = ({ status, playerClass, playerColor, timer, onSurrender, onNewGame, isVisible, isSurrenderDisabled }) => {    
 
     return (
         <div id="status" style = {{ display: isVisible ? 'block' : 'none' }}>
@@ -9,8 +10,8 @@ const StatusPanel = ({ status, timer, currentPlayer, onSurrender, onNewGame, sta
                 Elapsed Time: {timer}
             </div>
             <div id="status-container">
-                <div id="status-hex" className={`hex ${currentPlayer}`}></div>
-                <span id="status-text" style={{ color: statusColor }}>{status}</span>
+                <div id="status-hex" className={`hex ${playerClass}`}></div>
+                <span id="status-text" style={{ color: playerColor }}>{status}</span>
             </div>            
             <div id="button-container">
                 <button id="surrender" onClick={onSurrender} disabled={isSurrenderDisabled}>Surrender</button>                
