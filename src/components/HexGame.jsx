@@ -76,10 +76,10 @@ const HexGame = () => {
     const updateGame = (game, winner) => {
         if (winner) {
             // Display the winner and disable further moves            
-            const { className: winnerColor } = getPlayerAttributes(winner, colorScheme);
-            const winnerLogColor = winnerColor === 'white' ? 'silver' : winnerColor;
-            updateStatus(`${winnerColor} wins!`, winner, true, true);                  
-            console.log(`%c${winnerColor} wins! Turns: ${turn}`, `background: ${winnerLogColor}; color: white; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);                       
+            const { className: winnerName, color: winnerColor } = getPlayerAttributes(winner, colorScheme);
+            const winnerLogColor = winnerColor === 'white' ? 'silver' : winnerName;
+            updateStatus(`${winnerName} wins!`, winner, true, true);                  
+            console.log(`%c${winnerName} wins! Turns: ${turn}`, `background: ${winnerLogColor}; color: white; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);                       
             stopTimer();
             resetTurnCount();
             winnerSoundRef.current.play();            
