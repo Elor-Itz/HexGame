@@ -31,11 +31,9 @@ const HexGame = () => {
     const [isBoardDisabled, setIsBoardDisabled] = useState(false);
     const [isSurrenderDisabled, setIsSurrenderDisabled] = useState(false);
 
-    // Timer hook
-    const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));
-
-    // Turn counter hook
-    const { turn, incrementTurn, updateTurn, resetTurn } = useTurnCounter();
+    // Timer and turn counter hooks
+    const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));    
+    const { turn, incrementTurnCount, resetTurnCount } = useTurnCounter();
   
     // Refs for audio elements
     const player1SoundRef = useRef(null);
@@ -53,15 +51,10 @@ const HexGame = () => {
 
         // Set the first player
         const firstPlayer = "Player1";
-        newGame.currentPlayer = firstPlayer;
-        setCurrentPlayer(firstPlayer);        
-
-        // Update player attributes
-        updatePlayerAttributes(firstPlayer, colorScheme, false);
-        const { className: firstPlayerName } = getPlayerAttributes(firstPlayer, colorScheme);
-        updateStatus(`${firstPlayerName}'s turn`, firstPlayer, false, false);
-        incrementTurn();
-    };
+        newGame.currentPlayer = firstPlayer;        
+        updateCurrentPlayer(firstPlayer, colorScheme);        
+        incrementTurnCount();
+    };    
 
     // Update game environment
     const updateGameEnvironment = (game, gameMode, size, swapRule, colorScheme, isLobbyVisible, isStatusVisible, timerFunction ) => {
@@ -75,17 +68,18 @@ const HexGame = () => {
         if (timerFunction) {
             timerFunction();
         }
+        resetTurnCount();
     };
 
     // Handle game update
     const updateGame = (game, winner) => {
         if (winner) {
-            // Display the winner and disable further moves
+            // Display the winner and disable further moves            
             const { className: winnerColor } = getPlayerAttributes(winner, colorScheme);
             updateStatus(`${winnerColor} wins!`, winner, true, true);
             console.log(winnerColor, "wins, turns:", turn - 1)
             stopTimer();
-            resetTurn();
+            resetTurnCount();
         } else {
             // Switch the player
             switchPlayer(game);
@@ -93,9 +87,9 @@ const HexGame = () => {
             // If it's AI's turn, make a move            
             if (game.currentPlayer === "Player2" && ai) {                               
                 playAITurn(game, ai);
-                incrementTurn();                              
+                incrementTurnCount();                              
             } else {
-                incrementTurn();
+                incrementTurnCount();
             }        
         }        
     };
@@ -112,11 +106,17 @@ const HexGame = () => {
     // Handle player switch
     const switchPlayer = (game) => {
         const nextPlayer = game.currentPlayer === "Player1" ? "Player2" : "Player1";
-        game.currentPlayer = nextPlayer;  
-        updatePlayerAttributes(nextPlayer, colorScheme, false);
-        const { className: nextPlayerName } = getPlayerAttributes(nextPlayer, colorScheme);
-        updateStatus(`${nextPlayerName}'s turn`, nextPlayer, false, false);
-    };  
+        game.currentPlayer = nextPlayer;
+        updateCurrentPlayer(nextPlayer, colorScheme);        
+    }; 
+    
+    // Update current player
+    const updateCurrentPlayer = (player, colorScheme) => {
+        setCurrentPlayer(player);
+        updatePlayerAttributes(player, colorScheme, false);
+        const { className: playerName } = getPlayerAttributes(player, colorScheme);
+        updateStatus(`${playerName}'s turn`, player, false, false);
+    }
 
     // Handle AI turn
     const playAITurn = (game, ai) => {
@@ -170,7 +170,7 @@ const HexGame = () => {
     // Handle new game button click
     const handleNewGame = () => { 
         updateGameEnvironment(null, gameMode, boardSize, false, 'black-white', true, false), stopTimer();
-        setStatus("");
+        setStatus("");        
     };
 
     return (
