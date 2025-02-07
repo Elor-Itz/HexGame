@@ -1,10 +1,5 @@
 import { useState } from 'react';
 
-// Get win text color based on the player
-export const getWinTextColor = (player) => {
-    return player === 'Player1' ? '#df4204' : '#6d96e7';
-};
-
 // Manage player colors
 const usePlayerColors = () => {
     const [colorScheme, setColorScheme] = useState('');    
@@ -35,10 +30,10 @@ const usePlayerColors = () => {
     };
 
     // Update the player color and class
-    const updatePlayerAttributes = (player, colorScheme, isWinner = false) => {
+    const updatePlayerAttributes = (player, colorScheme) => {
         const { className, color  } = getPlayerAttributes(player, colorScheme);        
         setPlayerClass(className);
-        setPlayerColor(isWinner ? getWinTextColor(player) : color);     
+        setPlayerColor(color);     
     };    
 
     return {

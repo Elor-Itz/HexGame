@@ -38,6 +38,7 @@ const HexGame = () => {
     // Refs for audio elements
     const player1SoundRef = useRef(null);
     const player2SoundRef = useRef(null);
+    const winnerSoundRef = useRef(null);
 
     // Initialize a new game
     const initializeGame = (gameMode, boardSize, swapRule, colorScheme) => {
@@ -76,10 +77,11 @@ const HexGame = () => {
         if (winner) {
             // Display the winner and disable further moves            
             const { className: winnerColor } = getPlayerAttributes(winner, colorScheme);
-            updateStatus(`${winnerColor} wins!`, winner, true, true);
-            console.log(winnerColor, "wins, turns:", turn - 1)
+            updateStatus(`${winnerColor} wins!`, winner, true, true);            
+            console.log(winnerColor, "wins, turns:", turn - 1)            
             stopTimer();
             resetTurnCount();
+            winnerSoundRef.current.play();
         } else {
             // Switch the player
             switchPlayer(game);
@@ -113,7 +115,7 @@ const HexGame = () => {
     // Update current player
     const updateCurrentPlayer = (player, colorScheme) => {
         setCurrentPlayer(player);
-        updatePlayerAttributes(player, colorScheme, false);
+        updatePlayerAttributes(player, colorScheme);
         const { className: playerName } = getPlayerAttributes(player, colorScheme);
         updateStatus(`${playerName}'s turn`, player, false, false);
     }
@@ -164,6 +166,7 @@ const HexGame = () => {
     // Handle surrender button click
     const handleSurrender = () => {
         const winner = currentPlayer === "Player1" ? "Player2" : "Player1";
+        updatePlayerAttributes(winner, colorScheme);
         updateGame(game, winner);
     };
 
@@ -206,6 +209,7 @@ const HexGame = () => {
             {/* Audio elements for sound effects */}
             <audio ref={player1SoundRef} src="/sound/player1.mp3" />
             <audio ref={player2SoundRef} src="/sound/player2.mp3" />
+            <audio ref={winnerSoundRef} src="/sound/winner.mp3" />
         </div>
     );
 };
