@@ -30,9 +30,7 @@ class HexAILogic {
                     }
                 }
             }
-        }
-
-        console.log("AI Move:", bestMove);
+        }        
 
         if (bestMove) {
             this.game.makeMove(bestMove.row, bestMove.col);

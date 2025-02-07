@@ -22,6 +22,7 @@ const HexGame = () => {
 
     // Player color hook
     const { colorScheme, setColorScheme, playerClass, playerColor, getPlayerAttributes, updatePlayerAttributes } = usePlayerColors();
+    const logColor = playerColor === 'white' ? 'silver' : playerColor;
 
     // Swap rule
     const [swapRuleEnabled, setSwapRuleEnabled] = useState(false);      
@@ -53,8 +54,7 @@ const HexGame = () => {
         // Set the first player
         const firstPlayer = "Player1";
         newGame.currentPlayer = firstPlayer;        
-        updateCurrentPlayer(firstPlayer, colorScheme);        
-        incrementTurnCount();
+        updateCurrentPlayer(firstPlayer, colorScheme);
     };    
 
     // Update game environment
@@ -77,21 +77,19 @@ const HexGame = () => {
         if (winner) {
             // Display the winner and disable further moves            
             const { className: winnerColor } = getPlayerAttributes(winner, colorScheme);
-            updateStatus(`${winnerColor} wins!`, winner, true, true);            
-            console.log(winnerColor, "wins, turns:", turn - 1)            
+            const winnerLogColor = winnerColor === 'white' ? 'silver' : winnerColor;
+            updateStatus(`${winnerColor} wins!`, winner, true, true);                  
+            console.log(`%c${winnerColor} wins! Turns: ${turn}`, `background: ${winnerLogColor}; color: white; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);                       
             stopTimer();
             resetTurnCount();
-            winnerSoundRef.current.play();
+            winnerSoundRef.current.play();            
         } else {
             // Switch the player
             switchPlayer(game);
             
             // If it's AI's turn, make a move            
             if (game.currentPlayer === "Player2" && ai) {                               
-                playAITurn(game, ai);
-                incrementTurnCount();                              
-            } else {
-                incrementTurnCount();
+                playAITurn(game, ai);               
             }        
         }        
     };
@@ -101,8 +99,7 @@ const HexGame = () => {
         setStatus(status);
         setCurrentPlayer(currentPlayer);                    
         setIsBoardDisabled(isBoardDisabled);
-        setIsSurrenderDisabled(isSurrenderDisabled);
-        console.log("Turn number: ", turn);        
+        setIsSurrenderDisabled(isSurrenderDisabled);              
     };
 
     // Handle player switch
@@ -130,7 +127,12 @@ const HexGame = () => {
                 handleCellClick(move.row, move.col);
                 player2SoundRef.current.play(); 
                 switchPlayer(game);
-                setIsBoardDisabled(false);                                                                       
+                setIsBoardDisabled(false);
+                incrementTurnCount();
+                console.log(
+                    `%cTurn ${turn} | ${game.currentPlayer} (${playerClass}) | Row: ${move.row}, Col: ${move.col} | Time: ${formatTime(timer)}`, 
+                    `color: ${logColor}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
+                );
             }
         }, 1000);                    
     }
@@ -142,8 +144,14 @@ const HexGame = () => {
         
         // Make the move and update the board
         game.makeMove(row, col);
-        console.log('player:', game.currentPlayer, 'color', playerClass, 'row:', row, 'col:', col, 'time:', formatTime(timer));
+        incrementTurnCount();
         
+        // Log the move        
+        console.log(
+            `%cTurn ${turn} | ${game.currentPlayer} (${playerClass}) | Row: ${row}, Col: ${col} | Time: ${formatTime(timer)}`, 
+            `color: ${logColor}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
+        );
+
         // Play sound based on current player
         if (currentPlayer === "Player1") {
             player1SoundRef.current.play();
@@ -165,10 +173,11 @@ const HexGame = () => {
     
     // Handle surrender button click
     const handleSurrender = () => {
-        const winner = currentPlayer === "Player1" ? "Player2" : "Player1";
-        updatePlayerAttributes(winner, colorScheme);
+        console.log(`%c${currentPlayer} (${playerClass}) has surrendered.`, `color: ${logColor}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);      
+        const winner = currentPlayer === "Player1" ? "Player2" : "Player1";                           
+        updatePlayerAttributes(winner, colorScheme);        
         updateGame(game, winner);
-    };
+    }
 
     // Handle new game button click
     const handleNewGame = () => { 
