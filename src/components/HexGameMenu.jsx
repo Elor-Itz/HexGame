@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
+import HowToPlayModal from './HowToPlayModal';
 import '../styles/HexGameMenu.css';
 
 // HexGameMenu component
@@ -11,12 +12,18 @@ const HexGameMenu = ({ onStartGame }) => {
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [swapRule, setSwapRule] = useState(false);
-    const [colorScheme, setLocalColorScheme] = useState();
+    const [colorScheme, setColorScheme] = useState('black-white'); 
+         
 
     // Handle the input change event
     const handleInputChange = (event) => {
         setBoardSize(parseInt(event.target.value, 10));
     };
+
+    // Handle color scheme selection
+    const handleColorSchemeSelect = (scheme) => {
+        setColorScheme(scheme);
+    };    
     
     // Handle the start game button click
     const handleStartGame = () => {
@@ -66,60 +73,62 @@ const HexGameMenu = ({ onStartGame }) => {
                 </div>
             ) : (
                 <div id="menu-container">                    
-                    <label htmlFor="board-size-box">
-                        Board Size (n x n):
-                    <input
-                        type="number"
-                        id="board-size-box"
-                        min="3"
-                        max="19"
-                        value={boardSize}
-                        onChange={handleInputChange}
-                    />
-                    </label>
-                    <label htmlFor="game-mode-box">
-                        Game Mode:
-                        <select id="game-mode-box" value={mode} onChange={(e) => setMode(e.target.value)}>
-                            <option value="sandbox">Sandbox</option>
-                            <option value="ai">Versus AI</option>
-                        </select>
-                    </label>
-                    <label htmlFor="swap-rule-box">
-                        Enable Swap Rule:
-                        <input
-                            type="checkbox"
-                            id="swap-rule-box"
-                            checked={swapRule}
-                            onChange={(e) => setSwapRule(e.target.checked)}
-                        />
-                    </label>
-                    <label htmlFor="color-scheme-box">
-                        Color Scheme:
-                        <select id="color-scheme-box" value={colorScheme} onChange={(e) => setLocalColorScheme(e.target.value)}>
-                            <option value="black-white">Black/White</option>
-                            <option value="red-blue">Red/Blue</option>
-                        </select>
-                    </label>
+                    <div className="settings-container">
+                        <div className="input-container">
+                            <label htmlFor="board-size-box">
+                                Board Size (n×n):
+                            <input
+                                type="number"
+                                id="board-size-box"
+                                min="3"
+                                max="19"
+                                value={boardSize}
+                                onChange={handleInputChange}
+                            />
+                            </label>
+                            <label htmlFor="game-mode-box">
+                                Game Mode:
+                                <select id="game-mode-box" value={mode} onChange={(e) => setMode(e.target.value)}>
+                                    <option value="sandbox">Sandbox</option>
+                                    <option value="ai">Versus AI</option>
+                                </select>
+                            </label>
+                            <label htmlFor="swap-rule-box">
+                                Enable Swap Rule:
+                                <input
+                                    type="checkbox"
+                                    id="swap-rule-box"
+                                    checked={swapRule}
+                                    onChange={(e) => setSwapRule(e.target.checked)}
+                                />
+                            </label>
+                        </div>
+                        <div className="color-scheme-container">
+                            <label id="scheme-label">Color Scheme:</label>
+                            <div 
+                                className={`scheme-option ${colorScheme === 'black-white' ? 'selected' : ''}`} 
+                                onClick={() => handleColorSchemeSelect('black-white')}                            
+                            >
+                                <img src="/icon/scheme-bw.png" alt="Scheme BW" className="scheme-icon" />                            
+                            </div>
+                            <div
+                                className={`scheme-option ${colorScheme === 'red-blue' ? 'selected' : ''}`} 
+                                onClick={() => handleColorSchemeSelect('red-blue')}                            
+                            >
+                                <img src="/icon/scheme-rb.png" alt="Scheme RB" className="scheme-icon" />                           
+                            </div>
+                        </div>
+                    </div>
                     <button id="start-game" onClick={handleStartGame}>Start Game</button>
                     <button onClick={handleReturn}>Return</button>
                 </div>
             )}
             {showModal && (
-                <Modal message={modalMessage} onClose={handleCloseModal}>
-                    {showInstructions && (
-                        <div>
-                            <h2>How to Play:</h2>
-                            <img src="/img/example.png" alt="Example" className="modal-image" />
-                            <p>
-                                Hex is a game played on a two-dimensional board by two players - <span style={{ color: 'black', fontWeight: 'bold' }}>Black</span> and <span style={{ color: 'white', fontWeight: 'bold' }}>White</span>.
-                                Your goal is to form a connected path of your color, linking two opposite sides of the board: 
-                                <span style={{ color: 'black', fontWeight: 'bold' }}> Black</span> connects top and bottom, while <span style={{ color: 'white', fontWeight: 'bold' }}>White</span> connects left and right.
-                                The player who completes such a connection wins the game!
-                            </p>
-                        </div>
-                    )}
-                </Modal>
+                <Modal message={modalMessage} onClose={handleCloseModal} />
             )}
+            {showInstructions && (
+                <HowToPlayModal show={showInstructions} onClose={handleCloseModal} />
+            )}            
         </div>
     );
 };

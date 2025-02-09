@@ -93,23 +93,28 @@ const HexGame = () => {
 
     // Handle AI turn
     const playAITurn = (game, ai) => {
-        setIsBoardDisabled(true);        
+        setIsBoardDisabled(true);
         setTimeout(() => {
             const move = ai.makeMove();
-            if (move) {    
+            if (move) {
                 // Simulate a click on the cell returned by the AI
                 handleCellClick(move.row, move.col);
-                playPlayer2Sound(); 
-                switchPlayer(game);
-                const { className: playerName } = getPlayerAttributes(game.currentPlayer, colorScheme);            
-                updateStatus(`${playerName}'s turn`, false, false);                
-                incrementTurnCount();
+                playPlayer2Sound();
+    
+                // Log the move before switching the player
+                const { className: playerName } = getPlayerAttributes(game.currentPlayer, colorScheme);
                 console.log(
-                    `%cTurn ${turn} | ${game.currentPlayer} (${playerName}) | Row: ${move.row}, Col: ${move.col} | Time: ${formatTime(timer)}`, 
+                    `%cTurn ${turn} | ${game.currentPlayer} (${playerName}) | Row: ${move.row}, Col: ${move.col} | Time: ${formatTime(timer)}`,
                     `color: ${logColor}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
                 );
+    
+                // Switch the player
+                switchPlayer(game);
+                updateStatus(`${playerName}'s turn`, false, false);
+                incrementTurnCount();
+                setIsBoardDisabled(false);
             }
-        }, 1000);                    
+        }, 1000);
     };
     
     // Handle cell click

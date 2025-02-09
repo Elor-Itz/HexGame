@@ -1,18 +1,38 @@
-# ![Hex Game Icon](./src/assets/icon.png) Hex Game
+# ![Hex Game Icon](./src/assets/icon/icon.png) Hex Game
 
 This project is a Hex game implemented using React. The game allows two players to compete on a hexagonal board, with the goal of forming a connected path of their color linking two opposite sides of the board. The game logic relies on disjoint-set data structures to determine the winner.
 
-## How to Play
+## ♟️ How to Play
 
-The game is played on a two-dimensional board by two players - `black` and `white`. Your goal is to form a connected path of your color, linking two opposite sides of the board: `black` connects top and bottom, while `white` connects left and right.
+The game is played on a two-dimensional board by two players. Your goal is to form a connected path of your color, linking two opposite sides of the board: `Player 1` connects top and bottom, while `Player 2` connects left and right.
 The player who completes such a connection wins the game!
 
-## Prerequisites
+### 🎮 Game Modes
+
+Currently, the game has two modes:
+- 🏖️ `Sandbox`: Can be played by either one or two players using the same device.
+- 🤖 `Versus AI`: Play against the AI.
+
+### 🔄 The Swap Rule
+
+`Player 1` gains the initiative, and will therefore have a major advantage. If checked at the game setup, `Player 2` will have the choice to swap colors with `Player 1` after the first turn, effectively becoming `Player 1`.
+
+### 🎨 Color Schemes
+
+There are two available color schemes:
+- ![Scheme Black-White](./src/assets/icon/scheme-bw-i.png) **Black-White:**
+  - `Black` connects top and bottom.
+  - `White` connects left and right.
+- ![Scheme Red-Blue](./src/assets/icon/scheme-rb-i.png) **Red-Blue:**
+  - `Red` connects top and bottom.
+  - `Blue` connects left and right.
+
+## 📋 Prerequisites
 
 - Node.js
 - npm or yarn
 
-### Installation
+### 🛠️ Installation
 
 1. Clone the repository.
     
@@ -23,7 +43,7 @@ The player who completes such a connection wins the game!
     yarn install
     ```
 
-### Running the Game
+### 🚀 Running the Game
 
 1. Start the development server:
     ```sh
@@ -34,7 +54,7 @@ The player who completes such a connection wins the game!
 
 2. Open your browser and navigate to the localhost address to play the game.
 
-### Building for Production
+### 🏗️ Building for Production
 
 To create a production build, run:
 ```sh

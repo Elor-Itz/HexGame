@@ -10,28 +10,18 @@ class HexAILogic {
 
         let bestMove = null;
         let bestScore = -Infinity;
+        let moves = this.getAvailableMoves();
 
-        for (let row = 0; row < this.game.size; row++) {
-            for (let col = 0; col < this.game.size; col++) {
-                if (this.game.board[row][col] === null) {
-                    // Simulate the move
-                    this.game.makeMove(row, col);
-
-                    // Evaluate move with minimax
-                    const score = this.minimax(this.game, 2, -Infinity, Infinity, false);
-
-                    // Undo move
-                    this.game.board[row][col] = null;
-                    this.resetDSU(row, col);
-
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove = { row, col };
-                    }
-                }
+        // Evaluate each move and choose the best one
+        for (const move of moves) {
+            let score = this.evaluateMove(move.row, move.col);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
             }
-        }        
+        }
 
+        // Make the move if a valid one is found
         if (bestMove) {
             this.game.makeMove(bestMove.row, bestMove.col);
         }
@@ -39,102 +29,169 @@ class HexAILogic {
         return bestMove;
     }
 
-    minimax(game, depth, alpha, beta, isMaximizing) {
-        const winner = game.checkWinner();
-        if (winner === "Player2") return 1000;
-        if (winner === "Player1") return -1000;
-        if (depth === 0) return this.evaluateBoard(game);
-
-        if (isMaximizing) {
-            let maxEval = -Infinity;
-            for (let row = 0; row < game.size; row++) {
-                for (let col = 0; col < game.size; col++) {
-                    if (game.board[row][col] === null) {
-                        game.makeMove(row, col);
-                        let evalScore = this.minimax(game, depth - 1, alpha, beta, false);
-                        game.board[row][col] = null;
-                        this.resetDSU(row, col);
-                        maxEval = Math.max(maxEval, evalScore);
-                        alpha = Math.max(alpha, evalScore);
-                        if (beta <= alpha) break;
-                    }
+    getAvailableMoves() {
+        let moves = [];
+        for (let row = 0; row < this.game.size; row++) {
+            for (let col = 0; col < this.game.size; col++) {
+                if (this.game.board[row][col] === null) {
+                    moves.push({ row, col });
                 }
             }
-            return maxEval;
-        } else {
-            let minEval = Infinity;
-            for (let row = 0; row < game.size; row++) {
-                for (let col = 0; col < game.size; col++) {
-                    if (game.board[row][col] === null) {
-                        game.makeMove(row, col);
-                        let evalScore = this.minimax(game, depth - 1, alpha, beta, true);
-                        game.board[row][col] = null;
-                        this.resetDSU(row, col);
-                        minEval = Math.min(minEval, evalScore);
-                        beta = Math.min(beta, evalScore);
-                        if (beta <= alpha) break;
-                    }
-                }
-            }
-            return minEval;
         }
+        return moves;
     }
 
-    resetDSU(row, col) {
-        const index = this.game.index(row, col);
-        if (this.game.currentPlayer === "Player1") {
-            this.game.dsuB.reset(index);
-        } else {
-            this.game.dsuW.reset(index);
-        }
-    }
-
-    evaluateBoard(game) {
+    evaluateMove(row, col) {
         let score = 0;
 
-        // Get the opponent's strongest connections
-        let opponentThreats = this.findStrongestOpponentPath(game);
+        // 1. Prioritize positions near the center of the board
+        let center = Math.floor(this.game.size / 2);
+        let distanceFromCenter = Math.abs(row - center) + Math.abs(col - center);
+        score -= distanceFromCenter;  // Closer to center is better
 
-        for (let row = 0; row < game.size; row++) {
-            for (let col = 0; col < game.size; col++) {
-                if (game.board[row][col] === "Player2") {
-                    score += 10; // AI's move
-                } else if (game.board[row][col] === "Player1") {
-                    score -= 50; // Heavy penalty for opponent moves
-                }
-            }
-        }
+        // 2. Check if the move helps in blocking Player 1's path
+        score += this.blockPlayer1(row, col) * 50;
 
-        // Prioritize blocking the opponent's best paths
-        for (const { row, col } of opponentThreats) {
-            if (game.board[row][col] === null) {
-                score += 100; // Strong incentive for AI to play here
+        // 3. Check if the move creates or extends a possible path for Player 2 (Left-to-right)
+        score += this.formPlayer2Path(row, col) * 30;
+
+        // 4. Check for connections to other Player 2 stones (clinging to Player 1's path)
+        score += this.clingToPlayer1(row, col) * 20;
+
+        // 5. Formation of Bridges (helpful for creating new connections)
+        score += this.findPotentialBridges(row, col) * 15;
+
+        // 6. Look ahead for future threats or opportunities (e.g., Player 1 about to win)
+        score += this.lookAheadForThreats(row, col) * 40;
+
+        return score;
+    }
+
+    blockPlayer1(row, col) {
+        let score = 0;
+
+        // Check if placing a piece here blocks Player 1's path at critical junctures
+        const criticalBlockingPoints = this.findCriticalBlockingPoints();
+        for (const point of criticalBlockingPoints) {
+            if (point.row === row && point.col === col) {
+                score += 100;  // Major block to Player 1's progress
             }
         }
 
         return score;
     }
 
-    findStrongestOpponentPath(game) {
-        let criticalMoves = [];
+    formPlayer2Path(row, col) {
+        let score = 0;
 
-        for (let row = 0; row < game.size; row++) {
-            for (let col = 0; col < game.size; col++) {
-                if (game.board[row][col] === "Player1") {
-                    let connections = 0;
-                    for (const [r, c] of game.neighbors(row, col)) {
-                        if (game.board[r][c] === "Player1") {
-                            connections++;
-                        }
-                    }
-                    if (connections >= 2) {
-                        criticalMoves.push({ row, col });
-                    }
+        // Simulate Player 2's move and check if it helps in connecting left to right
+        let tempBoard = JSON.parse(JSON.stringify(this.game.board));
+        tempBoard[row][col] = "Player2"; // Simulate Player 2's move
+
+        // Check if Player 2 connects to the right side of the board
+        if (this.game.dsuW.find(this.game.leftNode) === this.game.dsuW.find(this.game.rightNode)) {
+            score += 30;  // Successful left-to-right connection
+        }
+
+        return score;
+    }
+
+    clingToPlayer1(row, col) {
+        let score = 0;
+
+        // Look for Player 1's stones in neighboring cells to cling to
+        let tempBoard = JSON.parse(JSON.stringify(this.game.board));
+        tempBoard[row][col] = "Player2"; // Simulate Player 2's move
+
+        // Check if Player 2 is adjacent to Player 1's stones
+        for (const [r, c] of this.game.neighbors(row, col)) {
+            if (this.game.board[r][c] === "Player1") {
+                score += 10;  // Cling to Player 1's stones to prevent them from connecting
+            }
+        }
+
+        return score;
+    }
+
+    findCriticalBlockingPoints() {
+        let criticalPoints = [];
+
+        // Look for Player 1's path and determine critical junctures
+        for (let row = 0; row < this.game.size; row++) {
+            for (let col = 0; col < this.game.size; col++) {
+                if (this.game.board[row][col] === "Player1") {
+                    // Check for connections that are about to form a top-to-bottom or left-to-right path
+                    this.checkForCriticalPaths(row, col, criticalPoints);
                 }
             }
         }
 
-        return criticalMoves;
+        return criticalPoints;
+    }
+
+    checkForCriticalPaths(row, col, criticalPoints) {
+        // Analyze Player 1's stone to check if it could be forming part of a winning path
+        // For simplicity, we'll assume top-to-bottom or left-to-right path detection
+        const directions = [[0, 1], [1, 0], [1, 1], [-1, -1]];  // Check horizontal, vertical, and diagonal directions
+        for (const [dr, dc] of directions) {
+            let r = row + dr;
+            let c = col + dc;
+            let count = 0;
+
+            // Check if Player 1 is about to form a connected path
+            while (this.isValidCell(r, c) && this.game.board[r][c] === "Player1") {
+                count++;
+                r += dr;
+                c += dc;
+            }
+
+            // If a potential path for Player 1 is forming, mark critical points to block
+            if (count >= 2) {  // If a path of at least 2 stones is forming, mark the next point
+                r -= dr;
+                c -= dc;
+                criticalPoints.push({ row: r, col: c });
+            }
+        }
+    }
+
+    findPotentialBridges(row, col) {
+        let bridgeCount = 0;
+        const directions = [[1, -1], [-1, 1], [1, 1], [-1, -1]];
+        
+        for (const [dr, dc] of directions) {
+            let r1 = row + dr, c1 = col + dc;
+            let r2 = row - dr, c2 = col - dc;
+
+            if (this.isValidCell(r1, c1) && this.isValidCell(r2, c2)) {
+                if (this.game.board[r1][c1] === "Player2" && this.game.board[r2][c2] === null) {
+                    bridgeCount++;
+                }
+                if (this.game.board[r2][c2] === "Player2" && this.game.board[r1][c1] === null) {
+                    bridgeCount++;
+                }
+            }
+        }
+
+        return bridgeCount;
+    }
+
+    lookAheadForThreats(row, col) {
+        let score = 0;
+
+        // Simulate Player 1's next move and check if it would lead to a win
+        let tempBoard = JSON.parse(JSON.stringify(this.game.board));
+        tempBoard[row][col] = "Player2"; // Simulate Player 2's move
+
+        // Check if Player 1 is one move away from winning (e.g., completing their top-bottom path)
+        if (this.game.dsuB.find(this.game.topNode) === this.game.dsuB.find(this.game.bottomNode)) {
+            score += 50;  // Prevent Player 1 from completing the top-to-bottom path
+        }
+
+        return score;
+    }
+
+    isValidCell(row, col) {
+        return row >= 0 && row < this.game.size && col >= 0 && col < this.game.size;
     }
 }
 
