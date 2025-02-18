@@ -1,4 +1,4 @@
-# ![Hex Game Icon](./src/assets/icon/icon.png) Hex Game
+# ![Hex Game Icon](./public/icons/hex-icon.png) Hex Game
 
 This project is a Hex game implemented using React. The game allows two players to compete on a hexagonal board, with the goal of forming a connected path of their color linking two opposite sides of the board. The game logic relies on disjoint-set data structures to determine the winner.
 
@@ -20,10 +20,10 @@ Currently, the game has two modes:
 ### 🎨 Color Schemes
 
 There are two available color schemes:
-- ![Scheme Black-White](./src/assets/icon/scheme-bw-i.png) **Black-White:**
+- ![Scheme Black-White](./public/icons/scheme-black-white.png) **Black-White:**
   - `Black` connects top and bottom.
   - `White` connects left and right.
-- ![Scheme Red-Blue](./src/assets/icon/scheme-rb-i.png) **Red-Blue:**
+- ![Scheme Red-Blue](./public/icons/scheme-red-blue.png) **Red-Blue:**
   - `Red` connects top and bottom.
   - `Blue` connects left and right.
 

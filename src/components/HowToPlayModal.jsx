@@ -1,13 +1,14 @@
 import React from 'react';
 import Modal from './Modal';
 import '../styles/Modal.css';
+import img1 from '../assets/images/how-to-play-img1.png';
 
 const HowToPlayModal = ({ show, onClose }) => {
     return (
         <Modal show={show} onClose={onClose}>
             <div className="modal-content">
                 <h2>How to Play:</h2>
-                <img src="/img/example.png" alt="Example" className="modal-image" />
+                <img src={img1} alt="Image1" className="modal-image" />
                 <h3>Basic Strategy</h3>
                 <p>
                     Hex is a game played by two players on an n×n sized hexagonal board. 

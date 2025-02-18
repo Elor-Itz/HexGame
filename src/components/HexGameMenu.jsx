@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Modal from './Modal';
 import HowToPlayModal from './HowToPlayModal';
 import '../styles/HexGameMenu.css';
+import schemeBlackWhite from '../assets/images/scheme-black-white.png';
+import schemeRedBlue from '../assets/images/scheme-red-blue.png';
 
 // HexGameMenu component
 const HexGameMenu = ({ onStartGame }) => {
@@ -109,13 +111,13 @@ const HexGameMenu = ({ onStartGame }) => {
                                 className={`scheme-option ${colorScheme === 'black-white' ? 'selected' : ''}`} 
                                 onClick={() => handleColorSchemeSelect('black-white')}                            
                             >
-                                <img src="/icon/scheme-bw.png" alt="Scheme BW" className="scheme-icon" />                            
+                                <img src={schemeBlackWhite} alt="Scheme BW" className="scheme-icon" />                            
                             </div>
                             <div
                                 className={`scheme-option ${colorScheme === 'red-blue' ? 'selected' : ''}`} 
                                 onClick={() => handleColorSchemeSelect('red-blue')}                            
                             >
-                                <img src="/icon/scheme-rb.png" alt="Scheme RB" className="scheme-icon" />                           
+                                <img src={schemeRedBlue} alt="Scheme RB" className="scheme-icon" />                           
                             </div>
                         </div>
                     </div>
