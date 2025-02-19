@@ -16,6 +16,7 @@
 #elapsed-time {    
     margin-top: 10px;
     text-align: center;
+    color: var(--color-label);
 }
 
 #status-container {

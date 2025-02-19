@@ -24,7 +24,7 @@ const OptionsModal = ({ show, onClose, onThemeChange, onVolumeChange }) => {
     return (
         <div className="options-modal">            
             <div className="options-modal-content">
-                <span className="close" onClick={onClose}>&times;</span>
+                <span className="options-close" onClick={onClose}>&times;</span>
                 <div className="options-modal-header">
                     <button onClick={() => handleTabClick('appearance')} className={activeTab === 'appearance' ? 'active' : ''}>Appearance</button>
                     <button onClick={() => handleTabClick('sound')} className={activeTab === 'sound' ? 'active' : ''}>Sound</button>
@@ -37,8 +37,9 @@ const OptionsModal = ({ show, onClose, onThemeChange, onVolumeChange }) => {
                             <label htmlFor="theme-box">
                                 Theme:
                                 <select id="theme-box" onChange={(e) => onThemeChange(e.target.value)}>
-                                    <option value="">Classic (Default)</option>
-                                    <option value="theme-light">Light</option>
+                                    <option value="">Light (Default)</option>
+                                    <option value="theme-classic">Classic</option>
+                                    <option value="theme-dark">Dark</option>                                    
                                 </select>
                             </label>                            
                         </div>

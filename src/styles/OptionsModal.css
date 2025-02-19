@@ -13,21 +13,9 @@
     background-color: var(--color-option-selected);    
     border: 1px transparent;    
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);    
     width: 500px;
     height: 600px;       
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 .options-modal-header {
@@ -89,18 +77,18 @@
     margin-bottom: 5px;
 }
 
-.close {
+.options-close {
     position: absolute;
     top: 10px;
     right: 10px;
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
-    color: #888;
+    color: black;
     background: none;
     border: none;
 }
 
-.close:hover {
-    color: #000;
+.options-close:hover {
+    color: dimGray;
 }

@@ -164,15 +164,15 @@ const HexGame = () => {
     };
 
     // Set background image when the game is active
-    useEffect(() => {
-        if (!isLobbyVisible) {
-            document.body.style.backgroundImage = `url(${backgroundImage})`;
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundPosition = 'center';
-        } else {
-            document.body.style.backgroundImage = '';
-        }
-    }, [isLobbyVisible]);
+    // useEffect(() => {
+    //     if (!isLobbyVisible) {
+    //         document.body.style.backgroundImage = `url(${backgroundImage})`;
+    //         document.body.style.backgroundSize = 'cover';
+    //         document.body.style.backgroundPosition = 'center';
+    //     } else {
+    //         document.body.style.backgroundImage = '';
+    //     }
+    // }, [isLobbyVisible]);
 
     return (
         <div>

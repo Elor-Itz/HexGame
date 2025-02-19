@@ -1,5 +1,18 @@
 /* Define global color palette */
 :root {
+    --color-background: snow;
+    --color-panel: lightGray;
+    --color-panel-2: darkGray;
+    --color-primary: lightSlateGray;
+    --color-primary-hover: darkSlateGray;    
+    --color-text: white;
+    --color-label: black;
+    --color-option-selected: silver;
+    --color-option-hover: #b3b3b3;
+}
+
+/* Classic theme */
+.theme-classic {
     --color-background: #e1d9d1;
     --color-panel: #c2b3a4;
     --color-panel-2: #b3a08d;
@@ -11,17 +24,17 @@
     --color-option-hover: #b3a08d;
 }
 
-/* Light theme */
-.theme-light {
-    --color-background: snow;
-    --color-panel: lightGray;
-    --color-panel-2: darkGray;
-    --color-primary: lightSlateGray;
-    --color-primary-hover: darkSlateGray;    
-    --color-text: white;
-    --color-label: black;
-    --color-option-selected: silver;
-    --color-option-hover: #b3b3b3;
+/* Dark theme */
+.theme-dark {
+    --color-background: #1e1e1e;
+    --color-panel: #2e2e2e;
+    --color-panel-2: #3e3e3e;
+    --color-primary: #4e4e4e;
+    --color-primary-hover: #5e5e5e;    
+    --color-text: #e1e1e1;
+    --color-label: #e1e1e1;   
+    --color-option-selected: #6e6e6e;
+    --color-option-hover: #7e7e7e;    
 }
 
 /* General styling */
