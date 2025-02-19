@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
+import OptionsModal from './OptionsModal';
 import HowToPlayModal from './HowToPlayModal';
 import '../styles/HexGameMenu.css';
 import schemeBlackWhite from '../assets/images/scheme-black-white.png';
@@ -11,11 +12,11 @@ const HexGameMenu = ({ onStartGame }) => {
     const [mode, setMode] = useState('sandbox');
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
+    const [showOptions, setShowOptions] = useState(false);
     const [showInstructions, setShowInstructions] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
     const [swapRule, setSwapRule] = useState(false);
-    const [colorScheme, setColorScheme] = useState('black-white'); 
-         
+    const [colorScheme, setColorScheme] = useState('black-white');         
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -50,7 +51,8 @@ const HexGameMenu = ({ onStartGame }) => {
     };
 
     // Handle new game button click
-    const handleOptions = () => {        
+    const handleOptions = () => {  
+        setShowOptions(true);      
     };
 
     // Handle instructions button click
@@ -62,6 +64,17 @@ const HexGameMenu = ({ onStartGame }) => {
     // Handle return button click
     const handleReturn = () => {
         setShowSettings(false);
+    };
+
+    // Handle theme change
+    const handleThemeChange = (theme) => {
+        document.body.className = theme;
+    };
+
+    // Handle volume change
+    const handleVolumeChange = (volume) => {
+        console.log(`Volume set to: ${volume}`);
+        // Implement volume control logic here
     };
 
     return (
@@ -127,6 +140,14 @@ const HexGameMenu = ({ onStartGame }) => {
             )}
             {showModal && (
                 <Modal message={modalMessage} onClose={handleCloseModal} />
+            )}
+            {showOptions && (
+                <OptionsModal
+                    show={showOptions}
+                    onClose={() => setShowOptions(false)}
+                    onThemeChange={handleThemeChange}
+                    onVolumeChange={handleVolumeChange}
+                />
             )}
             {showInstructions && (
                 <HowToPlayModal show={showInstructions} onClose={handleCloseModal} />
