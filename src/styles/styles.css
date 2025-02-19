@@ -1,7 +1,33 @@
+/* Define global color palette */
+:root {
+    --color-background: #e1d9d1;
+    --color-panel: #c2b3a4;
+    --color-panel-2: #b3a08d;
+    --color-primary: #8f8071;
+    --color-primary-hover: #6b6055;    
+    --color-text: white;
+    --color-label: black;   
+    --color-option-selected: #a1907f;
+    --color-option-hover: #b3a08d;
+}
+
+/* Light theme */
+.theme-light {
+    --color-background: snow;
+    --color-panel: lightGray;
+    --color-panel-2: darkGray;
+    --color-primary: lightSlateGray;
+    --color-primary-hover: darkSlateGray;    
+    --color-text: white;
+    --color-label: black;
+    --color-option-selected: silver;
+    --color-option-hover: #b3b3b3;
+}
+
 /* General styling */
 
 body {
-    background-color: snow; 
+    background-color: var(--color-background);
     font-family: Arial, sans-serif;
     text-align: center;
     margin: 20px;
@@ -11,25 +37,34 @@ button {
     padding: 10px 20px;
     font-size: 20px;
     margin-top: 20px;
-    background: lightSlateGray;
-    color: white;
+    background: var(--color-primary);
+    color: var(--color-text);
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background: darkSlateGray;
+    background: var(--color-primary-hover);
 }
 
 label {
     font-size: 20px;
-    margin-right: 10px;    
+    margin-right: 10px;
+    color: var(--color-label); 
 }
 
-select {
+input, select {
     font-size: 20px;
     padding: 5px;
     margin: 10px;
+    background-color: var(--color-option-selected);
+    color: var(--color-input-text);
+    border: 1px solid transparent;
+    border-radius: 4px;    
+}
+
+input:hover, select:hover {
+    background-color: var(--color-option-hover);
 }
 
 h1 {

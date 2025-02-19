@@ -10,6 +10,7 @@ import useAudio from '../hooks/useAudio';
 import HexBoard from './HexBoard';
 import StatusPanel from './StatusPanel';
 import '../styles/HexGame.css';
+import backgroundImage from '../assets/images/background.jpg';
 
 // HexGame component
 const HexGame = () => {
@@ -34,7 +35,7 @@ const HexGame = () => {
     const { turn, incrementTurnCount, resetTurnCount } = useTurnCounter();    
   
     // Audio hooks
-    const { player1SoundRef, player2SoundRef, winnerSoundRef, playPlayer1Sound, playPlayer2Sound, playWinnerSound } = useAudio();
+    const { playPlayer1Sound, playPlayer2Sound, playWinnerSound } = useAudio();
 
     // Initialize a new game
     const initializeGame = (gameMode, boardSize, swapRule, colorScheme) => {
@@ -94,6 +95,7 @@ const HexGame = () => {
     // Handle AI turn
     const playAITurn = (game, ai) => {
         setIsBoardDisabled(true);
+        setIsSurrenderDisabled(true);
         setTimeout(() => {
             const move = ai.makeMove();
             if (move) {
@@ -113,6 +115,7 @@ const HexGame = () => {
                 updateStatus(`${playerName}'s turn`, false, false);
                 incrementTurnCount();
                 setIsBoardDisabled(false);
+                setIsSurrenderDisabled(false);
             }
         }, 1000);
     };
@@ -160,6 +163,17 @@ const HexGame = () => {
         updateGameEnvironment(null, gameMode, boardSize, false, 'black-white', true, false), stopTimer();                
     };
 
+    // Set background image when the game is active
+    useEffect(() => {
+        if (!isLobbyVisible) {
+            document.body.style.backgroundImage = `url(${backgroundImage})`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+        } else {
+            document.body.style.backgroundImage = '';
+        }
+    }, [isLobbyVisible]);
+
     return (
         <div>
             {isLobbyVisible ? (
@@ -189,11 +203,7 @@ const HexGame = () => {
                         />
                     )}
                 </div>
-            )}
-            {/* Audio elements for sound effects */}
-            <audio ref={player1SoundRef} src="/sound/player1.mp3" />
-            <audio ref={player2SoundRef} src="/sound/player2.mp3" />
-            <audio ref={winnerSoundRef} src="/sound/winner.mp3" />
+            )}            
         </div>
     );
 };

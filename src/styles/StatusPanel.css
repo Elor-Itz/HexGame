@@ -3,7 +3,8 @@
 #status {    
     height: 300px;
     width: 400px;
-    background: lightGray;    
+    background: var(--color-panel);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);    
     flex-direction: column; 
     align-items: center;
     justify-content: space-between;

@@ -14,7 +14,7 @@
 }
 
 .modal-content {
-    background-color: darkGray;
+    background-color: var(--color-panel-2);
     margin: auto;
     padding: 20px;    
     width: 80%;    
@@ -31,18 +31,18 @@
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: darkGray;
+    background: var(--color-panel-2);
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background-color: #555;
+    background-color: var(--color-primary);
     border-radius: 10px;
-    border: 3px solid darkGray;
+    border: 3px solid var(--color-panel-2);
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background-color: #444;
+    background-color: var(--color-primary-hover);
 }
 
 .modal-image {
