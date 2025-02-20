@@ -5,23 +5,11 @@
     --color-panel-2: darkGray;
     --color-primary: lightSlateGray;
     --color-primary-hover: darkSlateGray;    
-    --color-text: white;
-    --color-label: black;
     --color-option-selected: silver;
     --color-option-hover: #b3b3b3;
-}
-
-/* Classic theme */
-.theme-classic {
-    --color-background: #e1d9d1;
-    --color-panel: #c2b3a4;
-    --color-panel-2: #b3a08d;
-    --color-primary: #8f8071;
-    --color-primary-hover: #6b6055;    
+    --color-option-hover-inner: white;
     --color-text: white;
-    --color-label: black;   
-    --color-option-selected: #a1907f;
-    --color-option-hover: #b3a08d;
+    --color-label: black;      
 }
 
 /* Dark theme */
@@ -31,14 +19,42 @@
     --color-panel-2: #3e3e3e;
     --color-primary: #4e4e4e;
     --color-primary-hover: #5e5e5e;    
-    --color-text: #e1e1e1;
-    --color-label: #e1e1e1;   
     --color-option-selected: #6e6e6e;
-    --color-option-hover: #7e7e7e;    
+    --color-option-hover: #7e7e7e;
+    --color-option-hover-inner: white;
+    --color-text: #e1e1e1;
+    --color-label: #e1e1e1;             
+}
+
+/* Classic theme */
+.theme-classic {
+    --color-background: #e1d9d1;
+    --color-panel: #c2b3a4;
+    --color-panel-2: #b3a08d;
+    --color-primary: #8f8071;
+    --color-primary-hover: #6b6055;    
+    --color-option-selected: #a1907f;
+    --color-option-hover: #bbaa98;
+    --color-option-hover-inner: white;
+    --color-text: white;
+    --color-label: black;    
+}
+
+/* Classic Dark theme */
+.theme-classic-dark {
+    --color-background: #24201c;
+    --color-panel: #36302a;
+    --color-panel-2: #484038;
+    --color-primary: #5a5047;
+    --color-primary-hover: #6b6055;    
+    --color-option-selected: #7d7063;
+    --color-option-hover: #8f8071;
+    --color-option-hover-inner: white;
+    --color-text: #e1e1e1;
+    --color-label: #e1e1e1;       
 }
 
 /* General styling */
-
 body {
     background-color: var(--color-background);
     font-family: Arial, sans-serif;
@@ -80,13 +96,17 @@ input:hover, select:hover {
     background-color: var(--color-option-hover);
 }
 
+h1, h2, h3, p {
+    color: var(--color-label);
+}
+
 h1 {
     font-size: 100px;
-    margin-bottom: 5px;
+    margin-bottom: 5px;    
 }
 
 p{
     font-size: 20px;
     line-height: 1.5;
-    text-align: justify;
+    text-align: justify;    
 }
