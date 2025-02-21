@@ -34,10 +34,16 @@
     height: 80px;
 }
 
+.options-modal-header button img {    
+    height: 50px;
+    width: 50px;
+}
+
 .options-modal-header button.active {
     font-weight: bold;    
     color: var(--color-text);
     background-color: var(--color-panel-2);
+    pointer-events: none;
 }
 
 .options-modal-header button:hover {

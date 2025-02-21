@@ -54,15 +54,15 @@
 }
 
 .close {
-    color: black;
+    color: var(--color-label);
     float: right;
     font-size: 28px;
-    font-weight: bold;
+    font-weight: bold;    
 }
 
 .close:hover,
-.close:focus {
-    color: dimGray;
+.close:focus {    
+    color: var(--color-option-hover-inner);
     text-decoration: none;
     cursor: pointer;
 }
