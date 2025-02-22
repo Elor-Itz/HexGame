@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import useOptions from '../hooks/useOptions';
 import '../styles/OptionsModal.css';
 import appearanceIconB from '../assets/icons/options-appearance-b.png';
 import appearanceIconW from '../assets/icons/options-appearance-w.png';
 import soundIconB from '../assets/icons/options-sound-b.png';
 import soundIconW from '../assets/icons/options-sound-w.png';
 
-const OptionsModal = ({ show, onClose, initialTheme, initialVolume, onThemeChange, onVolumeChange }) => {
+const OptionsModal = ({ show, onClose }) => {
     const [activeTab, setActiveTab] = useState('appearance');
-    const [currentTheme, setCurrentTheme] = useState('');
-    const [tempTheme, setTempTheme] = useState(currentTheme);
-    const [volume, setVolume] = useState(50); 
+    const { theme, volume, updateTheme, updateVolume } = useOptions();    
+    const [tempTheme, setTempTheme] = useState(theme);    
     const [tempVolume, setTempVolume] = useState(volume);   
 
     // Sync temp settings with initial settings when the modal opens
     useEffect(() => {
         if (show) {
-            setTempTheme(initialTheme);
-            setTempVolume(initialVolume);
+            setTempTheme(theme);
+            setTempVolume(volume);
         }
-    }, [show, initialTheme, initialVolume]);
+    }, [show, theme, volume]);
 
     // Handle the tab click event
     const handleTabClick = (tab) => {
@@ -37,25 +37,21 @@ const OptionsModal = ({ show, onClose, initialTheme, initialVolume, onThemeChang
     };
 
     // Handle the save event
-    const handleSave = () => {
-        setCurrentTheme(tempTheme);
-        setVolume(tempVolume);
-        onThemeChange(tempTheme);
-        onVolumeChange(tempVolume);                             
+    const handleSave = () => {        
+        updateTheme(tempTheme);
+        updateVolume(tempVolume);                             
     };
     
     // Handle restore to default event
     const handleRestoreDefault = () => {
-        handleThemeChange('');
-        setVolume(50);
-        onVolumeChange(50);               
+        updateTheme('');
+        updateVolume(50);                      
     };    
 
     // Cancel changes and restore previous settings
-    const handleCancel = () => {
-        document.body.className = currentTheme;
-        setTempTheme(currentTheme);
-        setTempVolume(volume);
+    const handleCancel = () => {        
+        updateTheme(theme);        
+        updateVolume(volume);
         onClose();
     };
 

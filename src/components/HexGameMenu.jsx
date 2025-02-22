@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import useAudio from '../hooks/useAudio';
 import Modal from './Modal';
 import OptionsModal from './OptionsModal';
+import useOptions from '../hooks/useOptions';
 import HowToPlayModal from './HowToPlayModal';
 import '../styles/HexGameMenu.css';
 import schemeBlackWhite from '../assets/images/scheme-black-white.png';
@@ -20,16 +20,15 @@ const HexGameMenu = ({ onStartGame }) => {
     
     // Options settings
     const [showOptions, setShowOptions] = useState(false);
-    const [theme, setTheme] = useState('');
-    const { volume, updateGameVolume } = useAudio(50);
+    const { theme, loadOptions } = useOptions();    
     
     // How to play modal
-    const [showHowToPlay, setShowHowToPlay] = useState(false);
-    
-    // Apply the theme when it changes
+    const [showHowToPlay, setShowHowToPlay] = useState(false);  
+
+    // Load stored options when the component mounts
     useEffect(() => {
-        document.body.className = theme;
-    }, [theme]);
+        loadOptions();
+    }, []);
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -146,11 +145,7 @@ const HexGameMenu = ({ onStartGame }) => {
             {showOptions && (
                 <OptionsModal
                     show={showOptions}
-                    onClose={() => setShowOptions(false)}
-                    initialTheme={theme}
-                    initialVolume={volume}
-                    onThemeChange={setTheme}
-                    onVolumeChange={updateGameVolume}
+                    onClose={() => setShowOptions(false)}                    
                 />
             )}
             {showHowToPlay && (
