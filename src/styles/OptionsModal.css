@@ -15,7 +15,10 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);    
     width: 500px;
-    height: 600px;       
+    height: 600px;
+    position:relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .options-modal-header {
@@ -25,13 +28,10 @@
 }
 
 .options-modal-header button {
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: var(--color-label);
+    background: none;    
     margin-bottom: 0px;
     height: 80px;
+    border-radius: 5px 5px 0px 0px;
 }
 
 .options-modal-header button img {    
@@ -46,14 +46,13 @@
     pointer-events: none;
 }
 
-.options-modal-header button:hover {
-    color: var(--color-text);
+.options-modal-header button:hover {    
     background-color: var(--color-option-hover);     
 }
 
 .options-modal-body {    
     display: flex;
-    flex-direction: column;
+    flex-direction: column;    
 }
 
 .appearance-tab, .sound-tab {
@@ -62,11 +61,10 @@
     background-color: var(--color-panel-2); 
     width: 480px;
     height: 490px;  
-    margin-left: 10px;    
+    margin-left: 10px;     
 }
 
-.appearance-tab button, .sound-tab input[type="range"] {    
-    font-size: 16px;
+.appearance-tab button, .sound-tab input[type="range"] {
     cursor: pointer;
     border: 1px solid var(--color-primary);
     border-radius: 5px;
@@ -78,9 +76,20 @@
     border-color: var(--color-option-hover);    
 }
 
-.sound-tab label {
-    font-size: 16px;
-    margin-bottom: 5px;
+.theme-control, .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin-left: 20px;
+}
+
+.theme-control select {
+    width: 200px;    
+    margin-left: 150px;
+}
+
+.volume-control input {
+    width: 280px;
 }
 
 .options-close {
@@ -101,4 +110,18 @@
 .options-close:hover {
     background-color: var(--color-option-hover);
     color: var(--color-option-hover-inner);
+}
+
+.options-modal-footer {    
+    display: flex;
+    align-items: space-between;
+    justify-content: center;   
+    padding: 10px;   
+    margin-top: -100px;
+    text-align: center;
+}
+
+.options-modal-footer button {
+    margin-left: 10px;
+    margin-right: 10px;
 }

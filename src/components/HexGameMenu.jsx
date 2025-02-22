@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useAudio from '../hooks/useAudio';
 import Modal from './Modal';
 import OptionsModal from './OptionsModal';
 import HowToPlayModal from './HowToPlayModal';
@@ -8,15 +9,27 @@ import schemeRedBlue from '../assets/images/scheme-red-blue.png';
 
 // HexGameMenu component
 const HexGameMenu = ({ onStartGame }) => {
+    // Game setup settings
+    const [showGameSetup, setShowGameSetup] = useState(false);
     const [boardSize, setBoardSize] = useState(11);
     const [mode, setMode] = useState('sandbox');
     const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
-    const [showOptions, setShowOptions] = useState(false);
-    const [showInstructions, setShowInstructions] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');    
     const [swapRule, setSwapRule] = useState(false);
-    const [colorScheme, setColorScheme] = useState('black-white');         
+    const [colorScheme, setColorScheme] = useState('black-white');
+    
+    // Options settings
+    const [showOptions, setShowOptions] = useState(false);
+    const [theme, setTheme] = useState('');
+    const { volume, updateGameVolume } = useAudio(50);
+    
+    // How to play modal
+    const [showHowToPlay, setShowHowToPlay] = useState(false);
+    
+    // Apply the theme when it changes
+    useEffect(() => {
+        document.body.className = theme;
+    }, [theme]);
 
     // Handle the input change event
     const handleInputChange = (event) => {
@@ -42,12 +55,12 @@ const HexGameMenu = ({ onStartGame }) => {
     const handleCloseModal = () => {
         setShowModal(false);
         setModalMessage('');
-        setShowInstructions(false);
+        setShowHowToPlay(false);
     };
 
     // Handle new game button click
     const handleNewGame = () => {
-        setShowSettings(true);
+        setShowGameSetup(true);
     };
 
     // Handle new game button click
@@ -57,29 +70,18 @@ const HexGameMenu = ({ onStartGame }) => {
 
     // Handle instructions button click
     const handleShowInstructions = () => {
-        setShowInstructions(true);
+        setShowHowToPlay(true);
         setShowModal(true);
     };    
 
     // Handle return button click
     const handleReturn = () => {
-        setShowSettings(false);
-    };
-
-    // Handle theme change
-    const handleThemeChange = (theme) => {
-        document.body.className = theme;
-    };
-
-    // Handle volume change
-    const handleVolumeChange = (volume) => {
-        console.log(`Volume set to: ${volume}`);
-        // Implement volume control logic here
-    };
+        setShowGameSetup(false);
+    };    
 
     return (
         <div id="menu-wrapper">
-            {!showSettings ? (
+            {!showGameSetup ? (
                 <div id="menu-container">
                     <h1 className="flash">Hex</h1>
                     <button onClick={handleNewGame}>New Game</button>
@@ -145,12 +147,14 @@ const HexGameMenu = ({ onStartGame }) => {
                 <OptionsModal
                     show={showOptions}
                     onClose={() => setShowOptions(false)}
-                    onThemeChange={handleThemeChange}
-                    onVolumeChange={handleVolumeChange}
+                    initialTheme={theme}
+                    initialVolume={volume}
+                    onThemeChange={setTheme}
+                    onVolumeChange={updateGameVolume}
                 />
             )}
-            {showInstructions && (
-                <HowToPlayModal show={showInstructions} onClose={handleCloseModal} />
+            {showHowToPlay && (
+                <HowToPlayModal show={showHowToPlay} onClose={handleCloseModal} />
             )}            
         </div>
     );
