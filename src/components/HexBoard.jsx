@@ -2,7 +2,7 @@ import React from 'react';
 import Hex from './Hex';
 
 // HexBoard component
-const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled, colorScheme, getPlayerAttributes }) => {
+const HexBoard = ({ game, boardSize, onClick, isBoardDisabled, colorScheme, getPlayerAttributes }) => {
     
     const boardWidth = 1400;
     const boardHeight = 850;   
@@ -23,7 +23,7 @@ const HexBoard = ({ game, boardSize, handleCellClick, isBoardDisabled, colorSche
                     row={row}
                     col={col}
                     game={game}
-                    handleCellClick={handleCellClick}
+                    onClick={onClick}
                     color={color}
                     isBoardDisabled={isBoardDisabled}
                     style={{

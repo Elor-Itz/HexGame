@@ -2,11 +2,11 @@ import React from 'react';
 import '../styles/Hex.css';
 
 // Hex component
-const Hex = ({ row, col, handleCellClick, color, isBoardDisabled, style }) => {
+const Hex = ({ row, col, onClick, color, isBoardDisabled, style }) => {
     // Handle the click event on the hexagon
     const handleClick = () => {
         if (!isBoardDisabled) {
-            handleCellClick(row, col);
+            onClick(row, col);
         }
     };
 

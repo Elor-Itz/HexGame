@@ -100,7 +100,7 @@ const HexGame = () => {
             const move = ai.makeMove();
             if (move) {
                 // Simulate a click on the cell returned by the AI
-                handleCellClick(move.row, move.col);
+                handleClick(move.row, move.col);
                 playPlayer2Sound();
     
                 // Log the move before switching the player
@@ -120,9 +120,9 @@ const HexGame = () => {
         }, 1000);
     };
     
-    // Handle cell click
-    const handleCellClick = (row, col) => {        
-        // Check if the cell is already filled
+    // Handle hex click
+    const handleClick = (row, col) => {        
+        // Check if the hex is already filled
         if (game.board[row][col] !== null) return;
         
         // Make the move and update the board
@@ -185,7 +185,7 @@ const HexGame = () => {
                     {game && <HexBoard
                         game={game}
                         boardSize={boardSize}                        
-                        handleCellClick={handleCellClick}
+                        onClick={handleClick}
                         isBoardDisabled={isBoardDisabled}
                         colorScheme={colorScheme}
                         getPlayerAttributes={getPlayerAttributes} 
