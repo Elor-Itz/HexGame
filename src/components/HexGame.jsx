@@ -15,23 +15,26 @@ import backgroundImage from '../assets/images/background.jpg';
 // HexGame component
 const HexGame = () => {
     // Game settings
+    const [gameSettings, setGameSettings] = useState({
+        gameMode: 'sandbox',
+        boardSize: 11,
+        colorScheme: 'black-white',
+        swapRuleEnabled: false,
+        isLobbyVisible: true,
+        isStatusVisible: true
+    });
     const [game, setGame] = useState(null);    
-    const [gameMode, setGameMode] = useState('sandbox');
-    const [boardSize, setBoardSize] = useState(11);
-    const [isLobbyVisible, setLobbyVisiblity] = useState(true);
-    const [isStatusVisible, setStatusVisiblity] = useState(true);
     const [ai, setAI] = useState(null);
-    const [swapRuleEnabled, setSwapRuleEnabled] = useState(false);
 
     // Game status
     const { status, updateStatus, isBoardDisabled, setIsBoardDisabled, isSurrenderDisabled, setIsSurrenderDisabled } = useGameStatus();
 
     // Player settings
-    const { currentPlayer, playerName, playerColor, colorScheme, setCurrentPlayer, setColorScheme, getPlayerAttributes, updatePlayerAttributes, getNextPlayer, switchPlayer, updatePlayer } = usePlayerManager();    
+    const { currentPlayer, playerName, playerColor, setCurrentPlayer, getPlayerAttributes, updatePlayerAttributes, getNextPlayer, switchPlayer, updatePlayer } = usePlayerManager(gameSettings.colorScheme);    
     const logColor = playerColor === 'white' ? 'silver' : playerColor;
     
     // Timer and turn counter hooks
-    const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));    
+    const { timer, resetTimer, stopTimer, formatTime } = useTimer(!gameSettings.isLobbyVisible && !status.includes('wins'));    
     const { turn, incrementTurnCount, resetTurnCount } = useTurnCounter();    
   
     // Audio hooks
@@ -56,14 +59,9 @@ const HexGame = () => {
     };    
 
     // Update game environment
-    const updateGameEnvironment = (game, gameMode, size, swapRule, colorScheme, isLobbyVisible, isStatusVisible, timerFunction ) => {
+    const updateGameEnvironment = (game, gameMode, boardSize, swapRule, colorScheme, isLobbyVisible, isStatusVisible, timerFunction ) => {
         setGame(game);
-        setGameMode(gameMode);
-        setBoardSize(size);        
-        setSwapRuleEnabled(swapRule);  
-        setColorScheme(colorScheme);  
-        setLobbyVisiblity(isLobbyVisible);
-        setStatusVisiblity(isStatusVisible);
+        setGameSettings({ gameMode: gameMode, boardSize: boardSize, colorScheme: colorScheme, swapRuleEnabled: swapRule, isLobbyVisible: isLobbyVisible, isStatusVisible: isStatusVisible });         
         timerFunction?.();
         resetTurnCount();
     };
@@ -72,7 +70,7 @@ const HexGame = () => {
     const updateGame = (game, winner) => {
         if (winner) {
             // Display the winner and disable further moves            
-            const { className: winnerName, color: winnerColor } = getPlayerAttributes(winner, colorScheme);
+            const { className: winnerName, color: winnerColor } = getPlayerAttributes(winner, gameSettings.colorScheme);
             const winnerLogColor = winnerColor === 'white' ? 'silver' : winnerName;
             updateStatus(`${winnerName} wins!`, true, true);                  
             console.log(`%c${winnerName} wins! Turns: ${turn}`, `background: ${winnerLogColor}; color: white; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);                       
@@ -82,7 +80,7 @@ const HexGame = () => {
         } else {
             // Switch the player            
             switchPlayer(game);            
-            const { className: playerName } = getPlayerAttributes(game.currentPlayer, colorScheme);            
+            const { className: playerName } = getPlayerAttributes(game.currentPlayer, gameSettings.colorScheme);            
             updateStatus(`${playerName}'s turn`, false, false);
             
             // If it's AI's turn, make a move            
@@ -104,7 +102,7 @@ const HexGame = () => {
                 playPlayer2Sound();
     
                 // Log the move before switching the player
-                const { className: playerName } = getPlayerAttributes(game.currentPlayer, colorScheme);
+                const { className: playerName } = getPlayerAttributes(game.currentPlayer, gameSettings.colorScheme);
                 console.log(
                     `%cTurn ${turn} | ${game.currentPlayer} (${playerName}) | Row: ${move.row}, Col: ${move.col} | Time: ${formatTime(timer)}`,
                     `color: ${logColor}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
@@ -160,7 +158,7 @@ const HexGame = () => {
 
     // Handle new game button click
     const handleNewGame = () => { 
-        updateGameEnvironment(null, gameMode, boardSize, false, 'black-white', true, false), stopTimer();                
+        updateGameEnvironment(null, gameSettings.gameMode, gameSettings.boardSize, false, 'black-white', true, false), stopTimer();                
     };
 
     // Set background image when the game is active
@@ -176,7 +174,7 @@ const HexGame = () => {
 
     return (
         <div>
-            {isLobbyVisible ? (
+            {gameSettings.isLobbyVisible ? (
                 <div id="lobby-container">
                     <HexGameMenu onStartGame={initializeGame} />
                 </div>
@@ -184,13 +182,13 @@ const HexGame = () => {
                 <div id="game-container">
                     {game && <HexBoard
                         game={game}
-                        boardSize={boardSize}                        
+                        boardSize={gameSettings.boardSize}
+                        colorScheme={gameSettings.colorScheme}                        
                         onClick={handleClick}
-                        isBoardDisabled={isBoardDisabled}
-                        colorScheme={colorScheme}
+                        isBoardDisabled={isBoardDisabled}                        
                         getPlayerAttributes={getPlayerAttributes} 
                         />}
-                    {isStatusVisible && (
+                    {gameSettings.isStatusVisible && (
                         <StatusPanel
                             status={status} 
                             playerName={playerName}
@@ -198,7 +196,7 @@ const HexGame = () => {
                             timer={formatTime(timer)}                            
                             onSurrender={handleSurrender}
                             onNewGame={handleNewGame}                            
-                            isVisible={isStatusVisible}
+                            isVisible={gameSettings.isStatusVisible}
                             isSurrenderDisabled={isSurrenderDisabled}                            
                         />
                     )}

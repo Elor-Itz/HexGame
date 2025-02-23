@@ -2,7 +2,7 @@ import React from 'react';
 import Hex from './Hex';
 
 // HexBoard component
-const HexBoard = ({ game, boardSize, onClick, isBoardDisabled, colorScheme, getPlayerAttributes }) => {
+const HexBoard = ({ game, boardSize, colorScheme, onClick, isBoardDisabled, getPlayerAttributes }) => {
     
     const boardWidth = 1400;
     const boardHeight = 850;   

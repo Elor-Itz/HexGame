@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-const usePlayerManager = () => {
-    const [currentPlayer, setCurrentPlayer] = useState("Player1");
-    const [colorScheme, setColorScheme] = useState('black-white');
+const usePlayerManager = (colorScheme) => {
+    const [currentPlayer, setCurrentPlayer] = useState("Player1");    
     const [playerName, setPlayerName] = useState('');
     const [playerColor, setPlayerColor] = useState('');
 
@@ -55,10 +54,8 @@ const usePlayerManager = () => {
     return {
         currentPlayer,
         playerName,
-        playerColor,
-        colorScheme,
-        setCurrentPlayer,
-        setColorScheme,
+        playerColor,        
+        setCurrentPlayer,        
         getPlayerAttributes,
         updatePlayerAttributes,
         getNextPlayer,
