@@ -47,6 +47,7 @@ const HexGameMenu = ({ onStartGame }) => {
         } else {
             setModalMessage("Please enter a size between 3 and 19.");
             setShowModal(true);
+            setBoardSize(11);
         }
     };
 
@@ -54,6 +55,7 @@ const HexGameMenu = ({ onStartGame }) => {
     const handleCloseModal = () => {
         setShowModal(false);
         setModalMessage('');
+        setShowOptions(false);
         setShowHowToPlay(false);
     };
 
@@ -69,14 +71,31 @@ const HexGameMenu = ({ onStartGame }) => {
 
     // Handle instructions button click
     const handleShowHowToPlay = () => {
-        setShowHowToPlay(true);
-        setShowModal(true);
+        setShowHowToPlay(true);        
     };    
 
     // Handle return button click
     const handleReturn = () => {
         setShowGameSetup(false);
-    };    
+    };
+    
+    // Close modals on Esc key press
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                if (showOptions || showHowToPlay || showModal) {
+                    handleCloseModal();
+                } else if (showGameSetup) {
+                    setShowGameSetup(false);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, );
 
     return (
         <div id="menu-wrapper">
@@ -145,7 +164,7 @@ const HexGameMenu = ({ onStartGame }) => {
             {showOptions && (
                 <OptionsModal
                     show={showOptions}
-                    onClose={() => setShowOptions(false)}                    
+                    onClose={handleCloseModal}                    
                 />
             )}
             {showHowToPlay && (
