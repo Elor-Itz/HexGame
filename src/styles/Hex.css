@@ -2,10 +2,10 @@
 .hex {
     width: 60px;
     height: 60px; 
-    background: black;
+    background: var(--color-label);
     display: inline-block;      
     position: relative;
-    margin: 0;  
+    margin: 0;    
 }
 
 .hex-background {
@@ -18,7 +18,7 @@
   left: 2px; 
   height: calc(100% - 4px);  
   width: calc(100% - 4px);
-  background: #ddd;
+  background: var(--color-panel);
   position: absolute;
   content: '';
 }

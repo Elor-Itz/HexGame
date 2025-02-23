@@ -1,0 +1,127 @@
+.options-modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;    
+    overflow: auto;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.options-modal-content {
+    background-color: var(--color-option-selected);    
+    border: 1px transparent;    
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);    
+    width: 500px;
+    height: 600px;
+    position:relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.options-modal-header {
+    display: flex;    
+    align-items: center;    
+    margin-left: 10px;  
+}
+
+.options-modal-header button {
+    background: none;    
+    margin-bottom: 0px;
+    height: 80px;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.options-modal-header button img {    
+    height: 50px;
+    width: 50px;
+}
+
+.options-modal-header button.active {
+    font-weight: bold;    
+    color: var(--color-text);
+    background-color: var(--color-panel-2);
+    pointer-events: none;
+}
+
+.options-modal-header button:hover {    
+    background-color: var(--color-option-hover);     
+}
+
+.options-modal-body {    
+    display: flex;
+    flex-direction: column;    
+}
+
+.appearance-tab, .sound-tab {
+    display: flex;
+    flex-direction: column; 
+    background-color: var(--color-panel-2); 
+    width: 480px;
+    height: 490px;  
+    margin-left: 10px;     
+}
+
+.appearance-tab button, .sound-tab input[type="range"] {
+    cursor: pointer;
+    border: 1px solid var(--color-primary);
+    border-radius: 5px;
+    transition: background-color 0.3s, border-color 0.3s;
+    color: var(--color-label)
+}
+
+.appearance-tab button:hover, .sound-tab input[type="range"]:hover {    
+    border-color: var(--color-option-hover);    
+}
+
+.theme-control, .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin-left: 20px;
+}
+
+.theme-control select {
+    width: 200px;    
+    margin-left: 150px;
+}
+
+.volume-control input {
+    width: 280px;
+}
+
+.options-close {
+    position: absolute;
+    top:-15px;    
+    right: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-label);
+    background: none;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.options-close:hover {
+    background-color: var(--color-option-hover);
+    color: var(--color-option-hover-inner);
+}
+
+.options-modal-footer {    
+    display: flex;
+    align-items: space-between;
+    justify-content: center;   
+    padding: 10px;   
+    margin-top: -100px;
+    text-align: center;
+}
+
+.options-modal-footer button {
+    margin-left: 10px;
+    margin-right: 10px;
+}
