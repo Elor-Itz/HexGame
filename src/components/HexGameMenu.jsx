@@ -18,9 +18,9 @@ const HexGameMenu = ({ onStartGame }) => {
     const [swapRule, setSwapRule] = useState(false);
     const [colorScheme, setColorScheme] = useState('black-white');
     
-    // Options settings
+    // Options modal
     const [showOptions, setShowOptions] = useState(false);
-    const { theme, loadOptions } = useOptions();    
+    const { loadOptions } = useOptions();    
     
     // How to play modal
     const [showHowToPlay, setShowHowToPlay] = useState(false);  
@@ -68,7 +68,7 @@ const HexGameMenu = ({ onStartGame }) => {
     };
 
     // Handle instructions button click
-    const handleShowInstructions = () => {
+    const handleShowHowToPlay = () => {
         setShowHowToPlay(true);
         setShowModal(true);
     };    
@@ -85,7 +85,7 @@ const HexGameMenu = ({ onStartGame }) => {
                     <h1 className="flash">Hex</h1>
                     <button onClick={handleNewGame}>New Game</button>
                     <button onClick={handleOptions}>Options</button> 
-                    <button onClick={handleShowInstructions}>How to Play</button>                                       
+                    <button onClick={handleShowHowToPlay}>How to Play</button>                                       
                 </div>
             ) : (
                 <div id="menu-container">                    

@@ -1,16 +1,17 @@
 import { useRef, useEffect, useState } from 'react';
+import { getVolume } from '../utils/getStorageData';
 import player1Sound from '../assets/sounds/player1-sound.mp3';
 import player2Sound from '../assets/sounds/player2-sound.mp3';
 import winnerSound from '../assets/sounds/winner-sound.mp3';
 
-const useAudio = (initialVolume = 50) => {
+const useAudio = () => {
+    // Audio elements
     const player1SoundRef = useRef(new Audio(player1Sound));
     const player2SoundRef = useRef(new Audio(player2Sound));
-    const winnerSoundRef = useRef(new Audio(winnerSound));
-    const [volume, setVolume] = useState(initialVolume);
+    const winnerSoundRef = useRef(new Audio(winnerSound));    
 
     const playPlayer1Sound = () => {
-        player1SoundRef.current.play();
+        player1SoundRef.current.play();        
     };
 
     const playPlayer2Sound = () => {
@@ -21,16 +22,13 @@ const useAudio = (initialVolume = 50) => {
         winnerSoundRef.current.play();
     };
 
-    const updateGameVolume = (newVolume) => {
-        setVolume(newVolume);
-    };
-
     // Update the volume of all audio elements when the volume state changes
-    useEffect(() => {        
+    useEffect(() => {  
+        const volume = getVolume();            
         player1SoundRef.current.volume = volume / 100;
         player2SoundRef.current.volume = volume / 100;
         winnerSoundRef.current.volume = volume / 100;
-    }, [volume]);
+    }, );
 
     // Cleanup function to pause and reset the audio when the component unmounts
     useEffect(() => {        
@@ -48,8 +46,6 @@ const useAudio = (initialVolume = 50) => {
         playPlayer1Sound,
         playPlayer2Sound,
         playWinnerSound,
-        updateGameVolume,
-        volume,
     };
 };
 

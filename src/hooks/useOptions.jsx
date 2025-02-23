@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
+import {getTheme, getVolume} from '../utils/getStorageData';
 
 const useOptions = () => {
-    // Retrieve initial settings from localStorage
-    const getInitialTheme = () => localStorage.getItem('theme') || '';
-    const getInitialVolume = () => parseInt(localStorage.getItem('volume'), 10) || 50;
-
     // State variables for theme and volume
-    const [theme, setTheme] = useState(getInitialTheme());
-    const [volume, setVolume] = useState(getInitialVolume());
+    const [theme, setTheme] = useState(getTheme());
+    const [volume, setVolume] = useState(getVolume());
 
     // Update localStorage to save options
     useEffect(() => {
@@ -31,8 +28,8 @@ const useOptions = () => {
 
     // Load stored options
     const loadOptions = () => {
-        document.body.className = getInitialTheme();        
-        setVolume(getInitialVolume());
+        document.body.className = getTheme();        
+        setVolume(getVolume());
     };
 
     return {
