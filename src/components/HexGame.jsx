@@ -1,13 +1,15 @@
-import React, { useReducer } from 'react';
+import React, { useState, useReducer } from 'react';
 import { gameReducer, initialState } from '../reducers/gameReducer';
 import HexGameMenu from './HexGameMenu';
 import HexBoard from './HexBoard';
 import StatusPanel from './StatusPanel';
+import Modal from './Modal';
 import useTimer from '../hooks/useTimer';
 import useAudio from '../hooks/useAudio';
 import HexGameLogic from '../services/hexGameLogic';
 import HexAILogic from '../services/hexAILogic';
-import { getNextPlayer, getPlayerColor, getLogColor } from '../utils/player';
+import { getNextPlayer, getPlayerColor } from '../utils/player';
+import { logMove, logWinner, logSurrender } from '../utils/logger';
 import '../styles/HexGame.css';
 import backgroundImage from '../assets/images/background.jpg';
 
@@ -15,8 +17,9 @@ import backgroundImage from '../assets/images/background.jpg';
 const HexGame = () => {
     // Game settings
     const [state, dispatch] = useReducer(gameReducer, initialState);
-    const { game, ai, boardSize, colorScheme, swapRuleEnabled, isLobbyVisible, isStatusVisible, status, isBoardDisabled, isSurrenderDisabled, currentPlayer, playerColor } = state;
-        
+    const { game, ai, boardSize, colorScheme, swapRuleEnabled, isLobbyVisible, isStatusVisible, status, isBoardDisabled,  isSurrenderDisabled, isSurrenderVisible, currentPlayer, playerColor } = state;
+    const [isSurrenderModalVisible, setSurrenderModalVisible] = useState(false);
+
     // Timer and audio hooks
     const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));
     const { playPlayer1Sound, playPlayer2Sound, playWinnerSound } = useAudio();
@@ -38,7 +41,7 @@ const HexGame = () => {
             // Display the winner and disable further moves            
             const winnerColor = getPlayerColor(winner, colorScheme);            
             dispatch({ type: 'UPDATE_STATUS', payload: { status: `${winnerColor} wins!`, isBoardDisabled: true, isSurrenderDisabled: true }, });                             
-            console.log(`%c${winnerColor} wins! Turns: ${game.turnCount}`, `background: ${getLogColor(winnerColor)}; color: white; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);                       
+            logWinner(winnerColor, game.turnCount);
             stopTimer();            
             playWinnerSound();           
         } else {
@@ -61,14 +64,9 @@ const HexGame = () => {
                 // Simulate a click on the cell returned by the AI
                 handleClick(move.row, move.col);
                 playPlayer2Sound();
-    
-                // Log the move before switching the player                
                 const playerColor = getPlayerColor(game.currentPlayer, colorScheme);                
-                console.log(
-                    `%cTurn ${game.turnCount} | ${game.currentPlayer} (${playerColor}) | Row: ${move.row}, Col: ${move.col} | Time: ${formatTime(timer)}`,
-                    `color: ${getLogColor(playerColor)}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
-                );
-    
+                logMove(game.turnCount, game.currentPlayer, playerColor, move.row, move.col, formatTime(timer));
+                
                 // Switch the player
                 switchPlayer(game);                
             }
@@ -78,10 +76,9 @@ const HexGame = () => {
     // Switch the current player    
     const switchPlayer = (game) => {
         const nextPlayer = game.switchPlayer();
-        dispatch({ type: 'UPDATE_PLAYER', payload: { currentPlayer: nextPlayer, playerColor: getPlayerColor(nextPlayer, colorScheme) }, });
-        const nextPlayerColor = getPlayerColor(game.currentPlayer, colorScheme); 
+        const nextPlayerColor = getPlayerColor(game.currentPlayer, colorScheme);
+        dispatch({ type: 'UPDATE_PLAYER', payload: { currentPlayer: nextPlayer, playerColor: nextPlayerColor }, });        
         dispatch({ type: 'UPDATE_STATUS', payload: { status: `${nextPlayerColor}'s turn`, isBoardDisabled: false, isSurrenderDisabled: false }, });                                
-   
     };
     
     // Handle hex click
@@ -90,17 +87,13 @@ const HexGame = () => {
         if (game.board[row][col] !== null) return;
         
         // Make the move and update the board
-        game.makeMove(row, col);               
-        
-        // Log the move        
-        console.log(
-            `%cTurn ${game.turnCount} | ${game.currentPlayer} (${playerColor}) | Row: ${row}, Col: ${col} | Time: ${formatTime(timer)}`, 
-            `color: ${getLogColor(playerColor)}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`
-        );
+        game.makeMove(row, col);  
+        logMove(game.turnCount, game.currentPlayer, playerColor, row, col, formatTime(timer));
 
         // Play sound based on current player
         (currentPlayer === "Player1" ? playPlayer1Sound() : playPlayer2Sound());
 
+        // Update game state
         updateGame(game, game.checkWinner());
     };
     
@@ -115,10 +108,23 @@ const HexGame = () => {
     
     // Handle surrender button click
     const handleSurrender = () => {
-        console.log(`%c${currentPlayer} (${playerColor}) has surrendered.`, `color: ${getLogColor(playerColor)}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`);
+        setSurrenderModalVisible(true);
+    };
+
+    // Handle surrender confirmation
+    const confirmSurrender = () => {
+        setSurrenderModalVisible(false);
+        logSurrender(currentPlayer, playerColor);
+        
+        // Update game state
         const winner = getNextPlayer(currentPlayer);        
         dispatch({ type: 'UPDATE_PLAYER', payload: { currentPlayer: winner, playerColor: getPlayerColor(winner, colorScheme) } });
         updateGame(game, winner);
+    };
+
+    // Handle surrender cancellation
+    const cancelSurrender = () => {
+        setSurrenderModalVisible(false);
     };
 
     // Handle new game button click
@@ -164,8 +170,15 @@ const HexGame = () => {
                             isSurrenderDisabled={isSurrenderDisabled}                            
                         />
                     )}
+                    <Modal
+                        isVisible={isSurrenderModalVisible}
+                        message="Are you sure you want to surrender?"
+                        onClose={cancelSurrender}                        
+                        onConfirm={confirmSurrender}
+                        onCancel={cancelSurrender}
+                    />
                 </div>
-            )}            
+            )}
         </div>
     );
 };

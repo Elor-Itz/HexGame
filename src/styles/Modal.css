@@ -13,6 +13,18 @@
     overflow: hidden;
 }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
 .modal-content {
     background-color: var(--color-panel-2);
     margin: auto;
@@ -23,6 +35,11 @@
     overflow: auto;
     text-align: center;
     user-select: none;
+}
+
+.modal-content button {    
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Custom scrollbar styles */

@@ -92,7 +92,11 @@ const GameSetup = ({ onStartGame, onReturn }) => {
             <button id="start-game" onClick={handleStartGame}>Start Game</button>
             <button onClick={onReturn}>Return</button>
             {showModal && (
-                <Modal message={modalMessage} onClose={handleCloseModal} />
+                <Modal
+                isVisible={showModal}                
+                message={modalMessage}
+                onClose={handleCloseModal}                
+            />
             )}
         </div>
     );

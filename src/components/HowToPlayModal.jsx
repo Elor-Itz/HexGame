@@ -5,7 +5,7 @@ import img1 from '../assets/images/how-to-play-img1.png';
 
 const HowToPlayModal = ({ show, onClose }) => {
     return (
-        <Modal show={show} onClose={onClose}>
+        <Modal isVisible={show} onClose={onClose}>
             <div className="modal-content">
                 <h2>How to Play:</h2>
                 <img src={img1} alt="Image1" className="modal-image" />
