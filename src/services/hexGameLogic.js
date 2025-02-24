@@ -1,4 +1,5 @@
-import DisjointSetUnion from "./disjointSetUnion.js";
+import DisjointSetUnion from "../utils/disjointSetUnion.js";
+import { getNextPlayer } from "../utils/getData.js";
 
 // Game logic
 class HexGameLogic {
@@ -7,6 +8,7 @@ class HexGameLogic {
         this.size = size;
         this.board = Array.from({ length: size }, () => Array(size).fill(null));
         this.currentPlayer = "Player1";
+        this.turnCount = 0;
 
         // Assign unique indices to virtual nodes
         this.topNode = size * size;
@@ -63,6 +65,13 @@ class HexGameLogic {
                 }
             }
         }
+
+        this.turnCount++;        
+    }
+
+    // Get the next player
+    switchPlayer() {
+        return this.currentPlayer = getNextPlayer(this.currentPlayer);
     }
 
     // Check the winner by using union-find
@@ -74,7 +83,7 @@ class HexGameLogic {
             return "Player2";
         }        
         return null;
-    }
+    }    
 }
 
 export default HexGameLogic;
