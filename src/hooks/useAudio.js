@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { getVolume } from '../utils/getData';
+import { getVolume } from '../utils/storage';
 import player1Sound from '../assets/sounds/player1-sound.mp3';
 import player2Sound from '../assets/sounds/player2-sound.mp3';
 import winnerSound from '../assets/sounds/winner-sound.mp3';

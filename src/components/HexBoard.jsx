@@ -1,8 +1,9 @@
 import React from 'react';
 import Hex from './Hex';
+import {getPlayerColor} from '../utils/player';
 
 // HexBoard component
-const HexBoard = ({ game, boardSize, colorScheme, onClick, isBoardDisabled, getPlayerAttributes }) => {
+const HexBoard = ({ game, boardSize, colorScheme, onClick, isBoardDisabled }) => {
     
     const boardWidth = 1400;
     const boardHeight = 850;   
@@ -15,7 +16,7 @@ const HexBoard = ({ game, boardSize, colorScheme, onClick, isBoardDisabled, getP
 
         for (let col = startCol; col <= endCol; col++) {
             const player = game.board[row][col];
-            const { className: color } = getPlayerAttributes(player, colorScheme);
+            const color = (getPlayerColor(player, colorScheme));
 
             hexagons.push(
                 <Hex

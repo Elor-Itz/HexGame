@@ -1,5 +1,5 @@
 import DisjointSetUnion from "../utils/disjointSetUnion.js";
-import { getNextPlayer } from "../utils/getData.js";
+import { getNextPlayer } from "../utils/player.js";
 
 // Game logic
 class HexGameLogic {

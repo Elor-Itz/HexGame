@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {getTheme, getVolume} from '../utils/getData';
+import {getTheme, getVolume} from '../utils/storage';
 
 const useOptions = () => {
     // State variables for theme and volume

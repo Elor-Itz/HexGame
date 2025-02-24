@@ -9,8 +9,7 @@ export const initialState = {
     isLobbyVisible: true,
     isStatusVisible: true,
     status: '',
-    currentPlayer: 'Player1',
-    playerName: '',
+    currentPlayer: 'Player1',    
     playerColor: '',
     isBoardDisabled: false,
     isSurrenderDisabled: false,    
@@ -29,8 +28,7 @@ export const gameReducer = (state, action) => {
                 colorScheme: action.payload.colorScheme,
                 isLobbyVisible: false,
                 isStatusVisible: true,
-                currentPlayer: action.payload.currentPlayer,
-                playerName: action.payload.playerName,
+                currentPlayer: action.payload.currentPlayer,                
                 playerColor: action.payload.playerColor,
             };
         case 'AI_TURN':
@@ -42,8 +40,7 @@ export const gameReducer = (state, action) => {
         case 'UPDATE_PLAYER':
             return {
                 ...state,                
-                currentPlayer: action.payload.currentPlayer,                
-                playerName: action.payload.playerName,
+                currentPlayer: action.payload.currentPlayer,
                 playerColor: action.payload.playerColor,
             };
         case 'UPDATE_STATUS':
