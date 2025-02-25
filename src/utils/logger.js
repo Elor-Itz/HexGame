@@ -8,6 +8,20 @@ export const logMove = (turn, player, playerColor, row, col, timer) => {
     );
 };
 
+// Log swap rule
+export const logSwap = (player1Color, player2Color, firstMove, secondMove) => {
+    const firstMoveStyle = `color: ${getLogColor(player2Color)}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`;
+    const secondMoveStyle = `color: ${getLogColor(player1Color)}; font-weight: bold; padding: 2px 4px; border-radius: 4px;`;
+
+    console.log(
+        `%cSwap rule performed: %c[Row: ${firstMove.row}, Col: ${firstMove.col}] %c<-> %c[Row: ${secondMove.row}, Col: ${secondMove.col}]`,
+        "font-weight: bold;",
+        firstMoveStyle,
+        "font-weight: bold;",
+        secondMoveStyle
+    );
+};
+
 // Log winner
 export const logWinner = (winnerColor, turnCount) => {
     console.log(

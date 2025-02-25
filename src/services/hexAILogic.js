@@ -1,10 +1,11 @@
 class HexAILogic {
-    constructor(game) {
+    constructor(game, player) {
         this.game = game;
+        this.player = player;
     }
 
     makeMove() {
-        if (this.game.currentPlayer !== "Player2") {
+        if (this.game.currentPlayer !== this.player) {
             return null;
         }
 
