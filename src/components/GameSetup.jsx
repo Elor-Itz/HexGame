@@ -37,7 +37,7 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                             min="3"
                             max="19"
                             value={boardSize}
-                            onChange={(e) => setBoardSize(e.target.value)}
+                            onChange={(e) => setBoardSize(Number(e.target.value))}
                             title="Size can be between 3 and 19."
                         />
                     </label>
