@@ -3,6 +3,7 @@ class HexAILogic {
         this.game = game;
         this.player = player;
         this.opponent = player === 'Player1' ? 'Player2' : 'Player1';
+        this.isDisabled = false;
     }
 
     makeMove() {

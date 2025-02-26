@@ -24,10 +24,10 @@ const HexGame = () => {
     const surrenderModal = useModal();
 
     // Initialize a new game
-    const initializeGame = (gameMode, boardSize, swapRule, colorScheme, player) => {
+    const initializeGame = (gameMode, boardSize, swapRule, colorScheme, AIplayer) => {
         // Initialize game state
         const newGame = new HexGameLogic(boardSize);
-        const newAI = gameMode === 'ai' ? new HexAILogic(newGame, player) : null;               
+        const newAI = gameMode === 'ai' ? new HexAILogic(newGame, AIplayer) : null;               
         
         dispatch({ type: 'INITIALIZE_GAME', payload: { game: newGame, ai: newAI, gameMode: gameMode, boardSize: boardSize, swapRule: swapRule, colorScheme: colorScheme },});                
         resetTimer();
@@ -37,7 +37,7 @@ const HexGame = () => {
         dispatch({ type: 'UPDATE_GAME', payload: { currentPlayer: firstPlayer, status: `${getPlayerColor(firstPlayer, colorScheme)}'s turn`, isBoardDisabled: false, isSurrenderDisabled: false }, });
 
         // If AI is Player1, make the first move
-        if (gameMode === 'ai' && player === 'Player1') {
+        if (gameMode === 'ai' && AIplayer === 'Player1') {
             playAITurn(newGame, newAI);
         }
     };
@@ -51,9 +51,8 @@ const HexGame = () => {
             logWinner(winnerColor, game.turnCount);
             stopTimer();            
             playWinnerSound();           
-        } else {
-            // Switch the player            
-            handlePlayerSwitch(game);
+        } else {                      
+            handlePlayerSwitch(game); // Switch the player  
             
             // If it's AI's turn, make a move            
             if (ai && getNextPlayer(currentPlayer) === ai.player) {                               
@@ -75,57 +74,67 @@ const HexGame = () => {
         if (game.board[row][col] !== null) return;        
         game.makeMove(row, col);  
         applyMoveEffects(game, row, col);
-
-        // Update game state
-        updateGame(game, game.checkWinner());
+        
+        updateGame(game, game.checkWinner()); // Update game state
     };
 
     // Apply move effects
-    const applyMoveEffects = (game, row, col) => {        
-        // Log move
+    const applyMoveEffects = (game, row, col) => {
         const playerColor = getPlayerColor(game.currentPlayer, colorScheme);                
-        logMove(game.turnCount, game.currentPlayer, playerColor, row, col, formatTime(timer));
-
-        // Play sound based on current player
-        (game.currentPlayer === "Player1" ? playPlayer1Sound() : playPlayer2Sound());
-
-        // Check swap rule condition
-        if (swapRuleEnabled && game.turnCount <= 2) checkSwapRule(row, col);
+        logMove(game.turnCount, game.currentPlayer, playerColor, row, col, formatTime(timer)); // Log move
+        
+        (game.currentPlayer === "Player1" ? playPlayer1Sound() : playPlayer2Sound()); // Play sound based on current player
+        
+        if (swapRuleEnabled && game.turnCount <= 2) checkSwapRule(row, col); // Check swap rule condition
     };
 
     // Handle AI turn
     const playAITurn = (game, ai) => {
+        
+        if (ai.isDisabled) return; // Check if AI is disabled
+
         dispatch({ type: 'AI_TURN' });
         setTimeout(() => {
             const move = ai.makeMove();
             if (move) {
                 applyMoveEffects(game, move.row, move.col);
+                game.trackMove(move.row,move.col);
                 handlePlayerSwitch(game);                
             }
         }, 1000);
     };
 
     // Check swap rule condition
-    const checkSwapRule = (row, col) => {
-        // Track the first two moves
-        game.trackMove(row, col);
+    const checkSwapRule = (row, col) => {        
+        game.trackMove(row, col); // Track the first two moves
     
-        if (game.turnCount !== 2) return;    
+        if (game.turnCount !== 2) return; // Check if it's the second move
         
-        if (ai && game.currentPlayer === ai.player) {
-            // AI has a 50% chance to swap
-            if (Math.random() < 0.5) handleSwapRule();
+        if (ai && game.currentPlayer === ai.player) {            
+            if (Math.random() < 0.5) handleSwapRule(); // AI has a 50% chance to swap
         } else {
-            // Show modal for human player            
-            setTimeout(() => swapModal.open(), 100);
+            if (ai) ai.isDisabled = true; // Disable AI while waiting for human player
+            game.secondMove = { row, col }; // Track the second move
+            setTimeout(() => swapModal.open(), 100); // Show modal for human player  
         }
     };
     
     // Handle swap rule
-    const handleSwapRule = () => {
+    const handleSwapRule = () => {                             
         game.performSwapRule();
         logSwap(getPlayerColor('Player1', colorScheme), getPlayerColor('Player2', colorScheme), game.firstMove, game.secondMove);
+        handleSwapClose();
+    };
+
+    // Handle swap rule cancel
+    const handleSwapClose = () => {
         swapModal.close();
+    
+        // Re-enable the AI
+        if (ai && game.currentPlayer === ai.player) {            
+            ai.isDisabled = false;
+            playAITurn(game, ai);
+        }        
     };
     
     // Handle surrender confirmation
@@ -173,9 +182,9 @@ const HexGame = () => {
                     <Modal
                         isVisible={swapModal.isVisible}
                         message="Do you want to swap positions?"  
-                        onClose={swapModal.close}                                            
+                        onClose={handleSwapClose}                                            
                         onConfirm={handleSwapRule}
-                        onCancel={swapModal.close}
+                        onCancel={handleSwapClose}
                     />
                     <Modal
                         isVisible={surrenderModal.isVisible}
