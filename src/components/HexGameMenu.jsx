@@ -17,27 +17,7 @@ const HexGameMenu = ({ onStartGame }) => {
     // Load stored options when the component mounts
     useEffect(() => {
         loadOptions();
-    }, []);     
-    
-    // Close modals on Esc key press
-    useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape') {
-                document.activeElement.blur();
-                if (optionsModal.isVisible || howToPlayModal.isVisible) {
-                    optionsModal.close();
-                    howToPlayModal.close();
-                } else if (gameSetupModal.isVisible) {
-                    gameSetupModal.close();
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [gameSetupModal.isVisible, optionsModal.isVisible, howToPlayModal.isVisible]);
+    }, []); 
 
     return (
         <div id="menu-wrapper">

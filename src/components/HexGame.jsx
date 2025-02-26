@@ -12,7 +12,6 @@ import HexAILogic from '../services/hexAILogic';
 import { getNextPlayer, getPlayerColor } from '../utils/player';
 import { logMove, logSwap, logWinner, logSurrender } from '../utils/logger';
 import '../styles/HexGame.css';
-import backgroundImage from '../assets/images/background.jpg';
 
 // HexGame component
 const HexGame = () => {
@@ -25,17 +24,23 @@ const HexGame = () => {
     const surrenderModal = useModal();
 
     // Initialize a new game
-    const initializeGame = (gameMode, boardSize, swapRule, colorScheme) => {
+    const initializeGame = (gameMode, boardSize, swapRule, colorScheme, player) => {
         // Initialize game state
         const newGame = new HexGameLogic(boardSize);
-        const newAI = gameMode === 'ai' ? new HexAILogic(newGame, 'Player2') : null;           
+        const newAI = gameMode === 'ai' ? new HexAILogic(newGame, player) : null;               
+        
         dispatch({ type: 'INITIALIZE_GAME', payload: { game: newGame, ai: newAI, gameMode: gameMode, boardSize: boardSize, swapRule: swapRule, colorScheme: colorScheme },});                
         resetTimer();
 
         // Set the first player and update the status
         const firstPlayer = newGame.currentPlayer;
         dispatch({ type: 'UPDATE_GAME', payload: { currentPlayer: firstPlayer, status: `${getPlayerColor(firstPlayer, colorScheme)}'s turn`, isBoardDisabled: false, isSurrenderDisabled: false }, });
-    };    
+
+        // If AI is Player1, make the first move
+        if (gameMode === 'ai' && player === 'Player1') {
+            playAITurn(newGame, newAI);
+        }
+    };
 
     // Handle game update
     const updateGame = (game, winner) => {
@@ -51,7 +56,7 @@ const HexGame = () => {
             handlePlayerSwitch(game);
             
             // If it's AI's turn, make a move            
-            if (getNextPlayer(currentPlayer) === "Player2" && ai) {                               
+            if (ai && getNextPlayer(currentPlayer) === ai.player) {                               
                 playAITurn(game, ai);               
             }        
         }        
@@ -69,14 +74,14 @@ const HexGame = () => {
         // Check if the hex is already filled - else make the move
         if (game.board[row][col] !== null) return;        
         game.makeMove(row, col);  
-        applyMoveEffects(row, col);
+        applyMoveEffects(game, row, col);
 
         // Update game state
         updateGame(game, game.checkWinner());
     };
 
     // Apply move effects
-    const applyMoveEffects = (row, col) => {
+    const applyMoveEffects = (game, row, col) => {        
         // Log move
         const playerColor = getPlayerColor(game.currentPlayer, colorScheme);                
         logMove(game.turnCount, game.currentPlayer, playerColor, row, col, formatTime(timer));
@@ -94,7 +99,7 @@ const HexGame = () => {
         setTimeout(() => {
             const move = ai.makeMove();
             if (move) {
-                applyMoveEffects(move.row, move.col);
+                applyMoveEffects(game, move.row, move.col);
                 handlePlayerSwitch(game);                
             }
         }, 1000);
@@ -111,8 +116,8 @@ const HexGame = () => {
             // AI has a 50% chance to swap
             if (Math.random() < 0.5) handleSwapRule();
         } else {
-            // Show modal for human player
-            swapModal.open();
+            // Show modal for human player            
+            setTimeout(() => swapModal.open(), 100);
         }
     };
     
@@ -138,17 +143,6 @@ const HexGame = () => {
         dispatch({ type: 'RESET_GAME' });
         stopTimer();                   
     };
-
-    // Set background image when the game is active
-    // useEffect(() => {
-    //     if (!isLobbyVisible) {
-    //         document.body.style.backgroundImage = `url(${backgroundImage})`;
-    //         document.body.style.backgroundSize = 'cover';
-    //         document.body.style.backgroundPosition = 'center';
-    //     } else {
-    //         document.body.style.backgroundImage = '';
-    //     }
-    // }, [isLobbyVisible]);
 
     return (
         <div>

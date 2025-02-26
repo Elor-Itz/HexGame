@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
+import useModal from '../hooks/useModal';
 import '../styles/GameSetup.css';
 import schemeBlackWhite from '../assets/images/scheme-black-white.png';
 import schemeRedBlue from '../assets/images/scheme-red-blue.png';
@@ -8,37 +9,20 @@ import schemeRedBlue from '../assets/images/scheme-red-blue.png';
 const GameSetup = ({ onStartGame, onReturn }) => {
     // Game setup settings
     const [boardSize, setBoardSize] = useState(11);
-    const [mode, setMode] = useState('sandbox');
+    const [gameMode, setGameMode] = useState('sandbox');
     const [swapRule, setSwapRule] = useState(false);
-    const [colorScheme, setColorScheme] = useState('black-white');
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
-
-    // Handle the input change event
-    const handleInputChange = (event) => {
-        setBoardSize(parseInt(event.target.value, 10));
-    };
-
-    // Handle color scheme selection
-    const handleColorSchemeSelect = (scheme) => {
-        setColorScheme(scheme);
-    };
+    const [colorScheme, setColorScheme] = useState('black-white');  
+    const [player, setPlayer] = useState('Player1');    
+    const invalidBoardSizeModal = useModal();    
 
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
-            onStartGame(mode, boardSize, swapRule, colorScheme);
+            onStartGame(gameMode, boardSize, swapRule, colorScheme, player);
         } else {
-            setModalMessage("Please enter a size between 3 and 19.");
-            setShowModal(true);
+            invalidBoardSizeModal.open();
             setBoardSize(11);
         }
-    };
-
-    // Handle modal close
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setModalMessage('');
     };
 
     return (
@@ -53,14 +37,18 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                             min="3"
                             max="19"
                             value={boardSize}
-                            onChange={handleInputChange}
+                            onChange={(e) => setBoardSize(e.target.value)}
                         />
                     </label>
                     <label htmlFor="game-mode-box">
                         Game Mode:
-                        <select id="game-mode-box" value={mode} onChange={(e) => setMode(e.target.value)}>
+                        <select id="game-mode-box" value={gameMode} onChange={(e) => setGameMode(e.target.value)}>
                             <option value="sandbox">Sandbox</option>
                             <option value="ai">Versus AI</option>
+                        </select>
+                        <select id="player-box" value={player} onChange={(e) => setPlayer(e.target.value)}>
+                            <option value="Player1">Player1</option>
+                            <option value="Player2">Player2</option>
                         </select>
                     </label>
                     <label htmlFor="swap-rule-box">
@@ -77,27 +65,25 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                     <label id="scheme-label">Color Scheme:</label>
                     <div
                         className={`scheme-option ${colorScheme === 'black-white' ? 'selected' : ''}`}
-                        onClick={() => handleColorSchemeSelect('black-white')}
+                        onClick={() => setColorScheme('black-white')}
                     >
-                        <img src={schemeBlackWhite} alt="Scheme BW" className="scheme-icon" />
+                        <img src={schemeBlackWhite} alt="Scheme_BW" className="scheme-icon" />
                     </div>
                     <div
                         className={`scheme-option ${colorScheme === 'red-blue' ? 'selected' : ''}`}
-                        onClick={() => handleColorSchemeSelect('red-blue')}
+                        onClick={() => setColorScheme('red-blue')}
                     >
-                        <img src={schemeRedBlue} alt="Scheme RB" className="scheme-icon" />
+                        <img src={schemeRedBlue} alt="Scheme_RB" className="scheme-icon" />
                     </div>
                 </div>
             </div>
             <button id="start-game" onClick={handleStartGame}>Start Game</button>
             <button onClick={onReturn}>Return</button>
-            {showModal && (
-                <Modal
-                isVisible={showModal}                
-                message={modalMessage}
-                onClose={handleCloseModal}                
+            <Modal
+                isVisible={invalidBoardSizeModal.isVisible}                
+                message={"Please enter a size between 3 and 19."}
+                onClose={invalidBoardSizeModal.close}                
             />
-            )}
         </div>
     );
 };
