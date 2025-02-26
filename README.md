@@ -15,7 +15,7 @@ Currently, the game has two modes:
 
 ### 🔄 The Swap Rule
 
-`Player 1` gains the initiative, and will therefore have a major advantage. If checked at the game setup, `Player 2` will have the choice to swap colors with `Player 1` after the first turn, effectively becoming `Player 1`.
+`Player 1` always gains the initiative, and will therefore have a major advantage. If checked at the game setup, `Player 2` will have the choice to swap moves with `Player 1` after the first turn.
 
 ### 🎨 Color Schemes
 

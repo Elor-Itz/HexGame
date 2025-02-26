@@ -23,7 +23,7 @@ const HowToPlayModal = ({ show, onClose }) => {
                 </p>                     
                 <h3>The Swap Rule</h3>
                 <p>
-                    Player 1 gains the initiative, and will therefore have a major advantage. The swap rule allows the second player to switch positions with the first player after the first player's first move.
+                    The first player always gains the initiative, and will therefore have a major advantage. The swap rule allows the second player to switch moves with the first player after the first player's first move.
                     This rule is optional and can be enabled or disabled before starting the game.
                 </p>
             </div>

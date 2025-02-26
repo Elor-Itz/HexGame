@@ -59,7 +59,7 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                             id="swap-rule-box"
                             checked={swapRule}
                             onChange={(e) => setSwapRule(e.target.checked)}
-                            title="The swap rule enables the second player to swap moves with the first player after the first move."
+                            title="The swap rule enables the second player to swap moves with the first player after the first turn."
                         />
                     </label>
                 </div>
