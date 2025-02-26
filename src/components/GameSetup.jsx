@@ -47,7 +47,7 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                             <option value="sandbox">Sandbox</option>
                             <option value="ai">Versus AI</option>
                         </select>                        
-                        <select id="player-box" title="This is the AI player." value={AIplayer} onChange={(e) => setAIPlayer(e.target.value)} disabled={gameMode !== 'ai'}>
+                        <select id="player-box" title="This is the AI player." value={AIplayer} onChange={(e) => setAIPlayer(e.target.value)} disabled={gameMode !== 'ai'} style={{ cursor: gameMode != 'ai' ? 'not-allowed' : 'pointer' }}>
                             <option value="Player1">Player1</option>
                             <option value="Player2">Player2</option>
                         </select>
@@ -60,6 +60,7 @@ const GameSetup = ({ onStartGame, onReturn }) => {
                             checked={swapRule}
                             onChange={(e) => setSwapRule(e.target.checked)}
                             title="The swap rule enables the second player to swap moves with the first player after the first turn."
+                            style={{ cursor: 'help' }}
                         />
                     </label>
                 </div>

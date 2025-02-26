@@ -98,6 +98,10 @@ input:hover, select:hover {
     background-color: var(--color-option-hover);
 }
 
+select {
+    cursor: pointer;
+}
+
 h1, h2, h3, p {
     color: var(--color-label);
 }
