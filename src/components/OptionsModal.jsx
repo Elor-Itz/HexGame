@@ -8,17 +8,19 @@ import soundIconW from '../assets/icons/options-sound-w.png';
 
 const OptionsModal = ({ show, onClose }) => {
     const [activeTab, setActiveTab] = useState('appearance');
-    const { theme, volume, updateTheme, updateVolume } = useOptions();    
-    const [tempTheme, setTempTheme] = useState(theme);    
+    const { theme, colorScheme, volume, updateTheme, updateColorScheme, updateVolume } = useOptions();    
+    const [tempTheme, setTempTheme] = useState(theme);
+    const [tempColorScheme, setTempColorScheme] = useState(colorScheme);  
     const [tempVolume, setTempVolume] = useState(volume);   
 
     // Sync temp settings with initial settings when the modal opens
     useEffect(() => {
         if (show) {
             setTempTheme(theme);
+            setTempColorScheme(colorScheme);
             setTempVolume(volume);
         }
-    }, [show, theme, volume]);
+    }, [show, theme, colorScheme, volume]);
 
     // Handle the tab click event
     const handleTabClick = (tab) => {
@@ -30,6 +32,11 @@ const OptionsModal = ({ show, onClose }) => {
         setTempTheme(theme);        
         document.body.className = theme;
     };
+
+    // Handle the scheme change event
+    const handleColorSchemeChange = (colorScheme) => {
+        setTempColorScheme(colorScheme);
+    };
     
     // Handle the volume change event
     const handleVolumeChange = (event) => {
@@ -39,6 +46,7 @@ const OptionsModal = ({ show, onClose }) => {
     // Handle the save event
     const handleSave = () => {        
         updateTheme(tempTheme);
+        updateColorScheme(tempColorScheme);
         updateVolume(tempVolume);                             
     };
     
@@ -90,6 +98,15 @@ const OptionsModal = ({ show, onClose }) => {
                                         <option value="theme-dark">Dark</option>
                                         <option value="theme-classic">Classic</option>
                                         <option value="theme-classic-dark">Classic Dark</option>                                    
+                                    </select>
+                                </label>  
+                            </div>
+                            <div className="scheme-control">
+                                <label htmlFor="scheme-box">
+                                    Default Color Scheme:
+                                    <select id="theme-box" value={tempColorScheme} onChange={(e) => handleColorSchemeChange(e.target.value)}>
+                                        <option value="black-white">Black-White</option>                                    
+                                        <option value="red-blue">Red-Blue</option>                                                                            
                                     </select>
                                 </label>  
                             </div>                                                      

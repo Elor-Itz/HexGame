@@ -76,7 +76,7 @@
     border-color: var(--color-option-hover);    
 }
 
-.theme-control, .volume-control {
+.theme-control, .scheme-control, .volume-control {
     display: flex;
     align-items: center;
     gap: 50px;
@@ -85,7 +85,12 @@
 
 .theme-control select {
     width: 200px;    
-    margin-left: 150px;
+    margin-left: 164px;
+}
+
+.scheme-control select {
+    width: 200px;    
+    margin-left: 30px;
 }
 
 .volume-control input {

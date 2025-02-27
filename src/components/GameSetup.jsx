@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import useModal from '../hooks/useModal';
+import { getColorScheme } from '../utils/storage';
 import '../styles/GameSetup.css';
 import schemeBlackWhite from '../assets/images/scheme-black-white.png';
 import schemeRedBlue from '../assets/images/scheme-red-blue.png';
@@ -14,6 +15,14 @@ const GameSetup = ({ onStartGame, onReturn }) => {
     const [colorScheme, setColorScheme] = useState('black-white');  
     const [AIplayer, setAIPlayer] = useState('Player1');    
     const invalidBoardSizeModal = useModal();    
+
+    // Load color scheme from storage when the component mounts
+    useEffect(() => {
+        const storedColorScheme = getColorScheme();
+        if (storedColorScheme) {
+            setColorScheme(storedColorScheme);
+        }
+    }, []);
 
     // Handle the start game button click
     const handleStartGame = () => {
