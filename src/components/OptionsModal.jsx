@@ -53,6 +53,7 @@ const OptionsModal = ({ show, onClose }) => {
     // Handle restore to default event
     const handleRestoreDefault = () => {
         updateTheme('');
+        updateColorScheme('black-white');
         updateVolume(50);                      
     };    
 
