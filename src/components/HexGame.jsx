@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { gameReducer, initialState } from '../reducers/gameReducer';
 import HexGameMenu from './HexGameMenu';
 import HexBoard from './HexBoard';
@@ -22,6 +22,7 @@ const HexGame = () => {
     const { playPlayer1Sound, playPlayer2Sound, playWinnerSound } = useAudio();
     const swapModal = useModal();
     const surrenderModal = useModal();
+    const quitModal = useModal();
 
     // Initialize a new game
     const initializeGame = (gameMode, boardSize, swapRule, colorScheme, AIplayer) => {
@@ -153,6 +154,37 @@ const HexGame = () => {
         stopTimer();                   
     };
 
+    // Handle keyboard key down events
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                // Prevent quit modal from opening if another modal is open
+                if (!surrenderModal.isVisible && !swapModal.isVisible && !quitModal.isVisible) {
+                    quitModal.open();
+                }
+            } else if (event.key === 'Enter') {
+                // If quit modal is open, confirm quit
+                if (quitModal.isVisible) {
+                    handleQuitConfirm(); // Function to quit game
+                } else if (surrenderModal.isVisible) {
+                    handleSurrender(); // Function to surrender
+                } else if (swapModal.isVisible) {
+                    handleSwapRule(); // Function to confirm swap
+                }
+            }
+        };
+    
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [surrenderModal.isVisible, swapModal.isVisible, quitModal.isVisible]);
+
+    // Handle quit confirmation
+    const handleQuitConfirm = () => {
+        dispatch({ type: 'RESET_GAME' });
+        stopTimer();
+        quitModal.close();
+    };
+
     return (
         <div>
             {isLobbyVisible ? (
@@ -192,6 +224,13 @@ const HexGame = () => {
                         onClose={surrenderModal.close}                                               
                         onConfirm={handleSurrender}
                         onCancel={surrenderModal.close}
+                    />
+                    <Modal
+                        isVisible={quitModal.isVisible}
+                        message="Are you sure you want to quit?"
+                        onClose={quitModal.close}
+                        onConfirm={handleQuitConfirm}
+                        onCancel={quitModal.close}
                     />
                 </div>
             )}

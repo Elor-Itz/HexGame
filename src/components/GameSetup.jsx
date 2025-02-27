@@ -24,6 +24,17 @@ const GameSetup = ({ onStartGame, onReturn }) => {
         }
     }, []);
 
+    // Handle keyboard key down events
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Enter') {
+                handleStartGame();
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [boardSize, gameMode, swapRule, colorScheme, AIplayer]);            
+
     // Handle the start game button click
     const handleStartGame = () => {
         if (boardSize >= 3 && boardSize <= 19) {
