@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useOptions from '../hooks/useOptions';
+import { getIcon } from '../utils/storage';
 import '../styles/OptionsModal.css';
-import appearanceIconB from '../assets/icons/options-appearance-b.png';
-import appearanceIconW from '../assets/icons/options-appearance-w.png';
-import soundIconB from '../assets/icons/options-sound-b.png';
-import soundIconW from '../assets/icons/options-sound-w.png';
 
 const OptionsModal = ({ show, onClose }) => {
     const [activeTab, setActiveTab] = useState('appearance');
@@ -62,16 +59,7 @@ const OptionsModal = ({ show, onClose }) => {
         updateTheme(theme);        
         updateVolume(volume);
         onClose();
-    };
-
-    // Get the icon based on the tab
-    const getIcon = (tab) => {
-        if (tab === 'appearance') {
-            return tempTheme.includes('dark') ? appearanceIconW : appearanceIconB;
-        } else if (tab === 'sound') {
-            return tempTheme.includes('dark') ? soundIconW : soundIconB;
-        }
-    };
+    };    
 
     if (!show) return null;    
 
