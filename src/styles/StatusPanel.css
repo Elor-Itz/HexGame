@@ -13,7 +13,7 @@
     display: none;
 }
 
-#elapsed-time {    
+#turn-time-container {    
     margin-top: 10px;
     text-align: center;
     color: var(--color-label);

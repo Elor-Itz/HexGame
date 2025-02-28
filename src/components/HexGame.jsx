@@ -203,8 +203,9 @@ const HexGame = () => {
                     {isStatusVisible && (
                         <StatusPanel
                             status={status}                            
-                            playerColor={getPlayerColor(currentPlayer, colorScheme)}                           
-                            timer={formatTime(timer)}                            
+                            playerColor={getPlayerColor(currentPlayer, colorScheme)}
+                            turn={game ? game.turnCount : 1}  
+                            timer={formatTime(timer)}                        
                             onSurrender={surrenderModal.open}
                             onNewGame={handleNewGame}                            
                             isVisible={isStatusVisible}
