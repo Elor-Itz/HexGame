@@ -1,10 +1,24 @@
 import { useEffect, useState } from 'react';
 
 const useModal = () => {
-    const [isVisible, setVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [message, setMessage] = useState('');
+    const [onConfirm, setOnConfirm] = useState(null);
+    const [onCancel, setOnCancel] = useState(null);
 
-    const open = () => setVisible(true);
-    const close = () => setVisible(false);
+    const open = (message, onConfirm, onCancel) => {
+        setMessage(message);
+        setOnConfirm(() => onConfirm);
+        setOnCancel(() => onCancel);
+        setIsVisible(true);
+    };
+
+    const close = () => {
+        setIsVisible(false);
+        setMessage('');
+        setOnConfirm(null);
+        setOnCancel(null);
+    };
 
     // Close the modal on Esc key press
     useEffect(() => {
@@ -21,7 +35,14 @@ const useModal = () => {
         };
     }, [isVisible]);
     
-    return { isVisible, open, close };
+    return {
+        isVisible,
+        message,
+        onConfirm,
+        onCancel,
+        open,
+        close,
+    };
 };
 
 export default useModal;

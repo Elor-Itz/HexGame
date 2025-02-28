@@ -20,9 +20,7 @@ const HexGame = () => {
     const { game, ai, boardSize, colorScheme, swapRuleEnabled, isLobbyVisible, isStatusVisible, status, isBoardDisabled, isSurrenderDisabled, currentPlayer } = state;
     const { timer, resetTimer, stopTimer, formatTime } = useTimer(!isLobbyVisible && !status.includes('wins'));
     const { playPlayer1Sound, playPlayer2Sound, playWinnerSound } = useAudio();
-    const swapModal = useModal();
-    const surrenderModal = useModal();
-    const quitModal = useModal();
+    const modal = useModal();    
 
     // Initialize a new game
     const initializeGame = (gameMode, boardSize, swapRule, colorScheme, AIplayer) => {
@@ -51,7 +49,8 @@ const HexGame = () => {
             dispatch({ type: 'UPDATE_GAME', payload: { currentPlayer: winner, status: `${winnerColor} wins!`, isBoardDisabled: true, isSurrenderDisabled: true }, });                             
             logWinner(winnerColor, game.turnCount);
             stopTimer();            
-            playWinnerSound();           
+            playWinnerSound(); 
+            showGameOverModal(winnerColor, `${winnerColor} wins!`); // Show game over modal                 
         } else {                      
             handlePlayerSwitch(game); // Switch the player  
             
@@ -115,8 +114,8 @@ const HexGame = () => {
             if (Math.random() < 0.5) handleSwapRule(); // AI has a 50% chance to swap
         } else {
             if (ai) ai.isDisabled = true; // Disable AI while waiting for human player
-            game.secondMove = { row, col }; // Track the second move
-            setTimeout(() => swapModal.open(), 100); // Show modal for human player  
+            game.secondMove = { row, col }; // Track the second move            
+            setTimeout(() => modal.open("Do you want to swap positions?", handleSwapRule, handleSwapClose), 100); // Show modal for human player  
         }
     };
     
@@ -128,8 +127,8 @@ const HexGame = () => {
     };
 
     // Handle swap rule cancel
-    const handleSwapClose = () => {
-        swapModal.close();
+    const handleSwapClose = () => {        
+        modal.close();
     
         // Re-enable the AI
         if (ai && game.currentPlayer === ai.player) {            
@@ -141,49 +140,66 @@ const HexGame = () => {
     // Handle surrender confirmation
     const handleSurrender = () => {        
         logSurrender(currentPlayer, getPlayerColor(currentPlayer, colorScheme));
+        modal.close();
         
         // Update game state
         const winner = getNextPlayer(currentPlayer);        
         updateGame(game, winner);
-        surrenderModal.close();
     };
 
     // Handle new game button click
     const handleNewGame = () => {         
         dispatch({ type: 'RESET_GAME' });
-        stopTimer();                   
+        stopTimer();
+        modal.close();                   
     };
+
+    // Handle quit confirmation
+    const handleQuitConfirm = () => {
+        dispatch({ type: 'RESET_GAME' });
+        stopTimer();        
+        modal.close();
+    };
+
+    // Show game over modal
+    const showGameOverModal = (winnerColor, winStatus) => {
+        modal.open(
+            <>
+            <div id="status-container">
+                <div id="status-hex" className={`hex ${winnerColor}`}></div>
+                <h2>
+                    <span id="status-text" style={{ color: (winnerColor).toLowerCase() }}>{winStatus}</span>
+                </h2>
+            </div> 
+            <h3>Play Time: {formatTime(timer)}</h3>
+            <h3>Total Turns: {game.turnCount}</h3>
+            <p>Do you want to start a new game?</p>            
+            </>,
+            handleNewGame,
+            handleQuitConfirm
+        );           
+    }    
 
     // Handle keyboard key down events
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === 'Escape') {
                 // Prevent quit modal from opening if another modal is open
-                if (!surrenderModal.isVisible && !swapModal.isVisible && !quitModal.isVisible) {
-                    quitModal.open();
+                if (!modal.isVisible) {
+                    modal.open(
+                        "Are you sure you want to quit?",
+                        handleQuitConfirm, () => modal.close()
+                    );
                 }
             } else if (event.key === 'Enter') {
                 // If quit modal is open, confirm quit
-                if (quitModal.isVisible) {
-                    handleQuitConfirm(); // Function to quit game
-                } else if (surrenderModal.isVisible) {
-                    handleSurrender(); // Function to surrender
-                } else if (swapModal.isVisible) {
-                    handleSwapRule(); // Function to confirm swap
-                }
+                if (modal.isVisible && modal.onConfirm) modal.onConfirm();                
             }
         };
     
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [surrenderModal.isVisible, swapModal.isVisible, quitModal.isVisible]);
-
-    // Handle quit confirmation
-    const handleQuitConfirm = () => {
-        dispatch({ type: 'RESET_GAME' });
-        stopTimer();
-        quitModal.close();
-    };
+    }, [modal.isVisible, modal.onConfirm]);        
 
     return (
         <div>
@@ -206,32 +222,22 @@ const HexGame = () => {
                             playerColor={getPlayerColor(currentPlayer, colorScheme)}
                             turn={game ? game.turnCount : 1}  
                             timer={formatTime(timer)}                        
-                            onSurrender={surrenderModal.open}
+                            onSurrender={() => modal.open(
+                                "Are you sure you want to surrender?",
+                                handleSurrender,
+                                () => modal.close()
+                            )}
                             onNewGame={handleNewGame}                            
                             isVisible={isStatusVisible}
                             isSurrenderDisabled={isSurrenderDisabled}                            
                         />
-                    )}
+                    )} 
                     <Modal
-                        isVisible={swapModal.isVisible}
-                        message="Do you want to swap positions?"  
-                        onClose={handleSwapClose}                                            
-                        onConfirm={handleSwapRule}
-                        onCancel={handleSwapClose}
-                    />
-                    <Modal
-                        isVisible={surrenderModal.isVisible}
-                        message="Are you sure you want to surrender?" 
-                        onClose={surrenderModal.close}                                               
-                        onConfirm={handleSurrender}
-                        onCancel={surrenderModal.close}
-                    />
-                    <Modal
-                        isVisible={quitModal.isVisible}
-                        message="Are you sure you want to quit?"
-                        onClose={quitModal.close}
-                        onConfirm={handleQuitConfirm}
-                        onCancel={quitModal.close}
+                        isVisible={modal.isVisible}
+                        message={modal.message}  
+                        onClose={modal.onCancel}                                            
+                        onConfirm={modal.onConfirm}
+                        onCancel={modal.onCancel}
                     />
                 </div>
             )}
